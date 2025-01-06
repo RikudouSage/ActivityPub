@@ -3,13 +3,22 @@
 namespace Rikudou\ActivityPub\Trait;
 
 use JsonSerializable;
+use Rikudou\ActivityPub\Attribute\IgnoreProperty;
 use Rikudou\ActivityPub\Enum\ValidatorMode;
 use Rikudou\ActivityPub\Exception\InvalidPropertyValueException;
+use Rikudou\ActivityPub\GlobalSettings;
 use Stringable;
 
 trait ObjectValidatorTrait
 {
-    protected ValidatorMode $validatorMode = ValidatorMode::Lax;
+    #[IgnoreProperty]
+    public ValidatorMode $validatorMode {
+        get {
+            $this->validatorMode ??= GlobalSettings::$validatorMode;
+            return $this->validatorMode;
+        }
+        set => $this->validatorMode = $value;
+    }
 
     /**
      * @return iterable<string, callable(mixed $value, ValidatorMode $mode): array<string>>

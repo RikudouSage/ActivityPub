@@ -2,6 +2,7 @@
 
 namespace Rikudou\ActivityPub\Trait;
 
+use DateTimeInterface;
 use JsonSerializable;
 use ReflectionObject;
 use ReflectionProperty;
@@ -51,16 +52,8 @@ trait JsonSerializableObjectTrait
                 $this->handleLangMapProperty($targetName, $value, $langMapProperty->suffix);
             }
 
-            if ($value instanceof Link && $value->simple) {
-                $value = (string) $value;
-            }
-            if ($value instanceof JsonSerializable) {
-                $value = $value->jsonSerialize();
-            }
+            $value = $this->convertToSerializableValue($value);
 
-            if ($value instanceof OmittedID) {
-                $value = null;
-            }
             if ($value === null) {
                 continue;
             }
@@ -96,5 +89,29 @@ trait JsonSerializableObjectTrait
         }
 
         return $attributes[array_key_first($attributes)]->newInstance();
+    }
+
+    private function convertToSerializableValue(mixed $value): mixed
+    {
+        if ($value instanceof Link && $value->simple) {
+            return (string) $value;
+        }
+        if ($value instanceof JsonSerializable) {
+            return $value->jsonSerialize();
+        }
+        if ($value instanceof OmittedID) {
+            return null;
+        }
+        if ($value instanceof DateTimeInterface) {
+            return $value->format('c');
+        }
+
+        if (is_array($value)) {
+            return array_map(function ($item) {
+                return $this->convertToSerializableValue($item);
+            }, $value);
+        }
+
+        return $value;
     }
 }
