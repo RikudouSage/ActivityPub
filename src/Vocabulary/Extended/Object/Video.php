@@ -3,11 +3,11 @@
 namespace Rikudou\ActivityPub\Vocabulary\Extended\Object;
 
 /**
- * Represents an audio document of any kind.
+ * Represents a video document of any kind.
  */
-class Audio extends Document
+class Video extends Document
 {
     public string $type {
-        get => 'Audio';
+        get => 'Video';
     }
 }

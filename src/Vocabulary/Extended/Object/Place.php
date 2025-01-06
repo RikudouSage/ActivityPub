@@ -10,12 +10,19 @@ use Rikudou\ActivityPub\Validator\NumberInRangeValidator;
 use Rikudou\ActivityPub\Vocabulary\Core\BaseObject;
 use Rikudou\ActivityPub\Vocabulary\Core\Link;
 
+/**
+ * Represents a logical or physical location.
+ */
 class Place extends BaseObject
 {
     public string $type {
         get => 'Place';
     }
 
+    /**
+     * Indicates the accuracy of position coordinates.
+     * Expressed in properties of percentage. e.g. "94.0" means "94.0% accurate".
+     */
     public ?float $accuracy {
         get => $this->accuracy;
         set {
@@ -27,6 +34,11 @@ class Place extends BaseObject
         }
     }
 
+    /**
+     * Indicates the altitude of a place.
+     * The measurement units is indicated using the {@see Place::units} property.
+     * If {@see Place::units} is not specified, the default is assumed to be {@see PlaceUnit::Meters}.
+     */
     public ?float $altitude {
         get => $this->altitude;
         set {
@@ -38,6 +50,9 @@ class Place extends BaseObject
         }
     }
 
+    /**
+     * The latitude of a place
+     */
     public ?float $latitude {
         get => $this->latitude;
         set {
@@ -49,6 +64,9 @@ class Place extends BaseObject
         }
     }
 
+    /**
+     * The longitude of a place
+     */
     public ?float $longitude {
         get => $this->longitude;
         set {
@@ -60,6 +78,11 @@ class Place extends BaseObject
         }
     }
 
+    /**
+     * The radius from the given latitude and longitude for a Place.
+     * The unit is expressed by the {@see Place::units} property.
+     * If {@see Place::units} is not specified, the default is assumed to be {@see PlaceUnit::Meters}.
+     */
     public ?float $radius {
         get => $this->radius;
         set {
@@ -71,6 +94,10 @@ class Place extends BaseObject
         }
     }
 
+    /**
+     * Specifies the measurement units for the {@see Place::radius} and {@see Place::altitude} properties.
+     * If not specified, the default is assumed to be {@see PlaceUnit::Meters}.
+     */
     public PlaceUnit|Link|null $units = null {
         get => $this->units;
         set (PlaceUnit|Link|null|string $value) {
