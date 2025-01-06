@@ -18,6 +18,10 @@ use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActor;
 
 class Actor extends BaseObject implements ActivityPubActor
 {
+    /**
+     * A reference to an {@see OrderedCollection} comprised of all the messages received by the actor. Also the
+     * target of all incoming messages for the actor.
+     */
     #[RequiredProperty(ValidatorMode::Lax)]
     public ?Link $inbox = null {
         get => $this->inbox;
@@ -34,6 +38,9 @@ class Actor extends BaseObject implements ActivityPubActor
         }
     }
 
+    /**
+     * An {@see OrderedCollection} comprised of all the messages produced by the actor
+     */
     #[RequiredProperty(ValidatorMode::Strict)]
     public ?Link $outbox = null {
         get => $this->outbox;
@@ -50,6 +57,9 @@ class Actor extends BaseObject implements ActivityPubActor
         }
     }
 
+    /**
+     * A link to an {@see Collection} of the actors that this actor is following
+     */
     #[RequiredProperty(ValidatorMode::Strict)]
     public ?Link $following = null {
         get => $this->following;
@@ -66,6 +76,9 @@ class Actor extends BaseObject implements ActivityPubActor
         }
     }
 
+    /**
+     * A link to an {@see Collection} of the actors that follow this actor
+     */
     #[RequiredProperty(ValidatorMode::Strict)]
     public ?Link $followers = null {
         get => $this->followers;
@@ -82,6 +95,9 @@ class Actor extends BaseObject implements ActivityPubActor
         }
     }
 
+    /**
+     * A link to a {@see Collection} of objects this actor has liked
+     */
     public ?Link $liked = null {
         get => $this->liked;
         set (Link|null|string $value) {
@@ -97,6 +113,9 @@ class Actor extends BaseObject implements ActivityPubActor
         }
     }
 
+    /**
+     * A list of supplementary Collections which may be of interest.
+     */
     public ?array $streams = null {
         get => $this->streams;
         set {
@@ -108,6 +127,9 @@ class Actor extends BaseObject implements ActivityPubActor
         }
     }
 
+    /**
+     * A short username which may be used to refer to the actor, with no uniqueness guarantees.
+     */
     #[RequiredProperty(ValidatorMode::Recommended)]
     public ?string $preferredUsername = null {
         get => $this->preferredUsername;
@@ -120,9 +142,17 @@ class Actor extends BaseObject implements ActivityPubActor
         }
     }
 
-    public ?Endpoints $endpoints = null {
+    /**
+     * A json object which maps additional (typically server/domain-wide) endpoints which may be useful either for this actor or someone referencing this actor.
+     * This mapping may be nested inside the actor document as the value or may be a link to a JSON-LD document with these properties.
+     */
+    public Endpoints|Link|null $endpoints = null {
         get => $this->endpoints;
-        set {
+        set (Endpoints|Link|null|string $value) {
+            if (is_string($value)) {
+                $value = Link::fromString($value);
+            }
+
             if ($this->__directSet) {
                 $this->endpoints = $value;
             } else {
