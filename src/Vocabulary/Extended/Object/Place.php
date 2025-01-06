@@ -1,0 +1,103 @@
+<?php
+
+namespace Rikudou\ActivityPub\Vocabulary\Extended\Object;
+
+use Rikudou\ActivityPub\Enum\PlaceUnit;
+use Rikudou\ActivityPub\Validator\Condition\NotNull;
+use Rikudou\ActivityPub\Validator\ConditionalValidator;
+use Rikudou\ActivityPub\Validator\NonNegativeNumberValidator;
+use Rikudou\ActivityPub\Validator\NumberInRangeValidator;
+use Rikudou\ActivityPub\Vocabulary\Core\BaseObject;
+use Rikudou\ActivityPub\Vocabulary\Core\Link;
+
+class Place extends BaseObject
+{
+    public string $type {
+        get => 'Place';
+    }
+
+    public ?float $accuracy {
+        get => $this->accuracy;
+        set {
+            if ($this->__directSet) {
+                $this->accuracy = $value;
+            } else {
+                $this->set('accuracy', $value);
+            }
+        }
+    }
+
+    public ?float $altitude {
+        get => $this->altitude;
+        set {
+            if ($this->__directSet) {
+                $this->altitude = $value;
+            } else {
+                $this->set('altitude', $value);
+            }
+        }
+    }
+
+    public ?float $latitude {
+        get => $this->latitude;
+        set {
+            if ($this->__directSet) {
+                $this->latitude = $value;
+            } else {
+                $this->set('latitude', $value);
+            }
+        }
+    }
+
+    public ?float $longitude {
+        get => $this->longitude;
+        set {
+            if ($this->__directSet) {
+                $this->longitude = $value;
+            } else {
+                $this->set('longitude', $value);
+            }
+        }
+    }
+
+    public ?float $radius {
+        get => $this->radius;
+        set {
+            if ($this->__directSet) {
+                $this->radius = $value;
+            } else {
+                $this->set('radius', $value);
+            }
+        }
+    }
+
+    public PlaceUnit|Link|null $units = null {
+        get => $this->units;
+        set (PlaceUnit|Link|null|string $value) {
+            if (is_string($value)) {
+                $value = Link::fromString($value);
+            }
+
+            if ($this->__directSet) {
+                $this->units = $value;
+            } else {
+                $this->set('units', $value);
+            }
+        }
+    }
+
+    protected function getValidators(): iterable
+    {
+        yield parent::getValidators();
+        yield from [
+            'accuracy' => new ConditionalValidator(
+                new NotNull(),
+                new NumberInRangeValidator(0, 100),
+            ),
+            'radius' => new ConditionalValidator(
+                new NotNull(),
+                new NonNegativeNumberValidator(),
+            ),
+        ];
+    }
+}

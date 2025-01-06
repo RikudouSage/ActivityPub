@@ -1,0 +1,21 @@
+{
+    "name": "rikudou/activity-pub",
+    "description": "Abstraction for working with ActivityPub objects",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Rikudou\\ActivityPub\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dominik Chrastecky",
+            "email": "dominik@chrastecky.cz"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^8.4"
+    }
+}
