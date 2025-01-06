@@ -229,3 +229,111 @@ echo json_encode($cat, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT), PHP_EOL;
 
 // Uncaught Rikudou\ActivityPub\Exception\MissingRequiredPropertyException: The property "Cat:lives" is required when running in "Strict" validator mode.
 ```
+
+Now, let's get fancy and create our cat! And announce it to the world!
+
+```php
+<?php
+
+use Rikudou\ActivityPub\Attribute\RequiredProperty;
+use Rikudou\ActivityPub\Enum\ValidatorMode;
+use Rikudou\ActivityPub\GlobalSettings;
+use Rikudou\ActivityPub\Vocabulary\Core\BaseObject;
+use Rikudou\ActivityPub\Vocabulary\Core\Link;
+use Rikudou\ActivityPub\Vocabulary\Extended\Activity\Announce;
+use Rikudou\ActivityPub\Vocabulary\Extended\Activity\Create;
+use Rikudou\ActivityPub\Vocabulary\Extended\Actor\Person;
+
+final class Cat extends BaseObject
+{
+    public string $type {
+        get => 'Cat';
+    }
+
+    #[RequiredProperty(ValidatorMode::Lax)]
+    public ?int $lives = null;
+}
+
+$cat = new Cat();
+$cat->id = 'https://example.com/meow';
+$cat->lives = 9;
+$cat->name = 'Meowth';
+
+$me = new Person();
+$me->id = 'https://example.com/me';
+$me->name = 'James';
+$me->inbox = 'https://example.com/inbox';
+$me->outbox = 'https://example.com/outbox';
+$me->following = 'https://example.com/following';
+$me->followers = 'https://example.com/following';
+
+$create = new Create();
+$create->id = 'https://example.com/create/meow';
+$create->actor = $me;
+$create->object = $cat;
+$create->to = Link::publicAudienceLink(); // a special link that indicates that the target is public
+
+$announcer = new Person();
+$announcer->id = 'https://example.com/not-me';
+$announcer->name = 'Jessie';
+$announcer->inbox = 'https://example.com/inbox-jessie';
+$announcer->outbox = 'https://example.com/outbox-jessie';
+$announcer->following = 'https://example.com/following-jessie';
+$announcer->followers = 'https://example.com/following-jessie';
+
+$announce = new Announce();
+$announce->id = 'https://example.com/announce/create/meow';
+$announce->to = $create->to;
+$announce->actor = $announcer;
+$announce->object = $create;
+
+echo json_encode($announce, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT), PHP_EOL;
+```
+
+All this prints this complicated-looking ActivityPub activity which can be sent to every ActivityPub server in the whole world!
+
+```json
+{
+  "type": "Announce",
+  "actor": {
+    "type": "Person",
+    "inbox": "https://example.com/inbox-jessie",
+    "outbox": "https://example.com/outbox-jessie",
+    "following": "https://example.com/following-jessie",
+    "followers": "https://example.com/following-jessie",
+    "@context": "https://www.w3.org/ns/activitystreams",
+    "id": "https://example.com/not-me",
+    "name": "Jessie"
+  },
+  "object": {
+    "type": "Create",
+    "actor": {
+      "type": "Person",
+      "inbox": "https://example.com/inbox",
+      "outbox": "https://example.com/outbox",
+      "following": "https://example.com/following",
+      "followers": "https://example.com/following",
+      "@context": "https://www.w3.org/ns/activitystreams",
+      "id": "https://example.com/me",
+      "name": "James"
+    },
+    "object": {
+      "type": "Cat",
+      "lives": 9,
+      "@context": "https://www.w3.org/ns/activitystreams",
+      "id": "https://example.com/meow",
+      "name": "Meowth"
+    },
+    "@context": "https://www.w3.org/ns/activitystreams",
+    "id": "https://example.com/create/meow",
+    "to": [
+      "https://www.w3.org/ns/activitystreams#Public"
+    ]
+  },
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "id": "https://example.com/announce/create/meow",
+  "to": [
+    "https://www.w3.org/ns/activitystreams#Public"
+  ]
+}
+```
