@@ -4,6 +4,7 @@ namespace Rikudou\ActivityPub\Vocabulary\Core;
 
 use Rikudou\ActivityPub\Attribute\RequiredProperty;
 use Rikudou\ActivityPub\Dto\Endpoints;
+use Rikudou\ActivityPub\Dto\PublicKey;
 use Rikudou\ActivityPub\Enum\ValidatorMode;
 use Rikudou\ActivityPub\Validator\AllIterableChildrenValidator;
 use Rikudou\ActivityPub\Validator\CompoundValidator;
@@ -157,6 +158,21 @@ class Actor extends BaseObject implements ActivityPubActor
                 $this->endpoints = $value;
             } else {
                 $this->set('endpoints', $value);
+            }
+        }
+    }
+
+    /**
+     * The public key for the user, used for authenticating every request originating from this actor.
+     */
+    #[RequiredProperty(ValidatorMode::Recommended)]
+    public ?PublicKey $publicKey = null {
+        get => $this->publicKey;
+        set {
+            if ($this->__directSet) {
+                $this->publicKey = $value;
+            } else {
+                $this->set('publicKey', $value);
             }
         }
     }
