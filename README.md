@@ -1,5 +1,13 @@
 # ActivityPub for PHP
 
+<!-- TOC -->
+* [ActivityPub for PHP](#activitypub-for-php)
+  * [Naming](#naming)
+  * [Objects and activities](#objects-and-activities)
+  * [Validations](#validations)
+  * [Creating your own types](#creating-your-own-types)
+<!-- TOC -->
+
 A strongly typed and developer friendly ActivityPub implementation. All Core and Extended types are implemented.
 Also some widely used unofficial extensions.
 
