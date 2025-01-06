@@ -13,6 +13,11 @@ use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActor;
 use Rikudou\ActivityPub\Vocabulary\Core\Activity;
 use Rikudou\ActivityPub\Vocabulary\Core\Link;
 
+/**
+ * Indicates that the {@see Follow::actor} is "following" the {@see Follow::object}.
+ * Following is defined in the sense typically used within Social systems in which the actor is interested in any activity
+ * performed by or on the object. The {@see Follow::target} and {@see Follow::origin} typically have no defined meaning.
+ */
 class Follow extends Activity
 {
     public string $type {

@@ -13,6 +13,13 @@ use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActivity;
 use Rikudou\ActivityPub\Vocabulary\Core\Activity;
 use Rikudou\ActivityPub\Vocabulary\Core\Link;
 
+/**
+ * Indicates that the {@see Undo::actor} is undoing the {@see Undo::object}.
+ * In most cases, the object will be an {@see Activity} describing some previously performed action
+ * (for instance, a person may have previously "liked" an article but, for whatever reason, might choose to undo that like at some later point in time).
+ *
+ * The {@see Undo::target} and {@see Undo::origin} typically have no defined meaning.
+ */
 class Undo extends Activity
 {
     public string $type {

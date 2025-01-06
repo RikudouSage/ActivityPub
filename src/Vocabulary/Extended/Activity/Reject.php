@@ -13,6 +13,10 @@ use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActivity;
 use Rikudou\ActivityPub\Vocabulary\Core\Activity;
 use Rikudou\ActivityPub\Vocabulary\Core\Link;
 
+/**
+ * Indicates that the {@see Reject::actor} is rejecting the {@see Reject::object}.
+ * The {@see Read::target} and {@see Reject::origin} typically have no defined meaning.
+ */
 class Reject extends Activity
 {
     public string $type {

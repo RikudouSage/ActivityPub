@@ -13,6 +13,11 @@ use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActivity;
 use Rikudou\ActivityPub\Vocabulary\Core\Activity;
 use Rikudou\ActivityPub\Vocabulary\Core\Link;
 
+/**
+ * Indicates that the {@see Announce::actor} is calling the {@see Announce::target}'s attention the {@see Announce::object}.
+ *
+ * The {@see Announce::origin} typically has no defined meaning.
+ */
 class Announce extends Activity
 {
     public string $type {

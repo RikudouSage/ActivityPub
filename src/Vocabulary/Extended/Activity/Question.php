@@ -12,6 +12,11 @@ use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubObject;
 use Rikudou\ActivityPub\Vocabulary\Core\IntransitiveActivity;
 use Rikudou\ActivityPub\Vocabulary\Core\Link;
 
+/**
+ * Represents a question being asked.
+ * Either of the {@see Question::anyOf} and {@see Question::oneOf} properties may be used to express possible answers,
+ * but a Question object must not have both properties.
+ */
 class Question extends IntransitiveActivity
 {
     public string $type {
