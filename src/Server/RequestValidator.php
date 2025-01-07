@@ -6,5 +6,5 @@ use Psr\Http\Message\ServerRequestInterface;
 
 interface RequestValidator
 {
-    public function isRequestValid(ServerRequestInterface $request, string $publicKey): bool;
+    public function isRequestValid(ServerRequestInterface $request): bool;
 }

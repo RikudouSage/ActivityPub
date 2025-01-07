@@ -13,6 +13,9 @@ Also some widely used unofficial extensions.
     * [Objects and activities](#objects-and-activities)
     * [Validations](#validations)
     * [Creating your own types](#creating-your-own-types)
+  * [Server](#server)
+    * [Request signing](#request-signing)
+    * [Request validating](#request-validating)
 <!-- TOC -->
 
 ## Objects
@@ -347,7 +350,7 @@ In addition to the ActivityPub object, there are also various helpers for implem
 All of them rely on the PSR abstractions, so it should be easy to use them with your favourite http client or
 a framework of choice.
 
-### Request signing and validating
+### Request signing
 
 While not part of the ActivityPub protocol itself, you won't get far in the Fediverse without signing your request - almost no
 mainstream software accepts activities that are unsigned. For signing to work, each actor must be publicly accessible at the URL
@@ -466,4 +469,40 @@ class ActivitySender
         }
     }
 }
+```
+
+### Request validating
+
+Of course the reverse, validating an incoming request, is also possible!
+
+```php
+<?php
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Rikudou\ActivityPub\Server\RequestValidator;
+
+class IncomingActivityHandler
+{
+    public function __construct(
+        // Just like before, an interface that's implemented by RequestSignerAndValidator
+        private RequestValidator $requestValidator,
+    ) {
+    }
+
+    public function handle(
+        ServerRequestInterface $incomingRequest,
+    ): ResponseInterface {
+        if ($incomingRequest->getMethod() !== 'POST') {
+            // todo return 405
+        }
+
+        if (!$this->requestValidator->isRequestValid($incomingRequest)) {
+            // todo return 403 or something
+        }
+
+        // todo handle the request
+    }
+}
+
 ```

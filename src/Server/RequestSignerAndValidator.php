@@ -4,16 +4,30 @@ namespace Rikudou\ActivityPub\Server;
 
 use DateTimeImmutable;
 use DateTimeZone;
+use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Rikudou\ActivityPub\Exception\CryptographyException;
 use Rikudou\ActivityPub\Exception\InvalidOperationException;
 use Rikudou\ActivityPub\Exception\InvalidStateException;
+use Rikudou\ActivityPub\Exception\InvalidValueException;
+use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActor;
+use Rikudou\ActivityPub\Vocabulary\Parser\DefaultTypeParser;
+use Rikudou\ActivityPub\Vocabulary\Parser\TypeParser;
 use SensitiveParameter;
 
 final readonly class RequestSignerAndValidator implements RequestSigner, RequestValidator
 {
     private const string SUPPORTED_ALGORITHM = 'hs2019';
+
+    public function __construct(
+        private ClientInterface $httpClient,
+        private RequestFactoryInterface $requestFactory,
+        private TypeParser $typeParser = new DefaultTypeParser(),
+    ) {
+    }
 
     public function signRequest(RequestInterface $request, string $keyId, #[SensitiveParameter] string $privateKeyPem): RequestInterface
     {
@@ -46,7 +60,7 @@ final readonly class RequestSignerAndValidator implements RequestSigner, Request
         return $request;
     }
 
-    public function isRequestValid(ServerRequestInterface $request, string $publicKey): bool
+    public function isRequestValid(ServerRequestInterface $request): bool
     {
         $signatureHeader = $request->getHeader('Signature');
         if (!$signatureHeader) {
@@ -78,6 +92,7 @@ final readonly class RequestSignerAndValidator implements RequestSigner, Request
         }
 
         $opensslAlgorithm = OPENSSL_ALGO_SHA256;
+        $publicKey = $this->fetchPublicKey($keyId);
 
         return openssl_verify(
             $signingString,
@@ -159,5 +174,32 @@ final readonly class RequestSignerAndValidator implements RequestSigner, Request
         }
 
         return  implode("\n", $signingParts);
+    }
+
+    private function fetchPublicKey(string $keyId): string
+    {
+        $request = $this->requestFactory
+            ->createRequest('GET', $keyId)
+            ->withHeader('Accept', 'application/activity+json')
+        ;
+        try {
+            $response = $this->httpClient->sendRequest($request);
+        } catch (ClientExceptionInterface $e) {
+            throw new InvalidValueException('Failed fetching public key from the remote actor', previous: $e);
+        }
+        if ($response->getStatusCode() !== 200) {
+            throw new InvalidValueException('Failed fetching public key from the remote actor');
+        }
+
+        $object = $this->typeParser->parseJson($response->getBody());
+        if (!$object instanceof ActivityPubActor) {
+            throw new InvalidValueException('The fetched resource is not a valid actor');
+        }
+
+        if (!$object->publicKey) {
+            throw new InvalidValueException('The fetched resource is an actor without a public key specified');
+        }
+
+        return $object->publicKey->publicKeyPem;
     }
 }
