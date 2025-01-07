@@ -12,6 +12,7 @@ Also some widely used unofficial extensions.
     * [Naming](#naming)
     * [Objects and activities](#objects-and-activities)
     * [Validations](#validations)
+    * [Parsing JSON into types](#parsing-json-into-types)
     * [Creating your own types](#creating-your-own-types)
   * [Server](#server)
     * [Request signing](#request-signing)
