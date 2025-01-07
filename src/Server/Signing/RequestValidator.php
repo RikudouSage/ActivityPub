@@ -1,6 +1,6 @@
 <?php
 
-namespace Rikudou\ActivityPub\Server;
+namespace Rikudou\ActivityPub\Server\Signing;
 
 use Psr\Http\Message\ServerRequestInterface;
 

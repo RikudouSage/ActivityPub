@@ -1,6 +1,6 @@
 <?php
 
-namespace Rikudou\ActivityPub\Server;
+namespace Rikudou\ActivityPub\Server\Signing;
 
 use DateTimeImmutable;
 use DateTimeZone;
@@ -13,6 +13,8 @@ use Rikudou\ActivityPub\Exception\CryptographyException;
 use Rikudou\ActivityPub\Exception\InvalidOperationException;
 use Rikudou\ActivityPub\Exception\InvalidStateException;
 use Rikudou\ActivityPub\Exception\InvalidValueException;
+use Rikudou\ActivityPub\Server\Signing\RequestValidator;
+use Rikudou\ActivityPub\Server\Signing\RequestSigner;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActor;
 use Rikudou\ActivityPub\Vocabulary\Parser\DefaultTypeParser;
 use Rikudou\ActivityPub\Vocabulary\Parser\TypeParser;

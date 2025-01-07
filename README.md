@@ -466,7 +466,7 @@ Example:
 
 use Rikudou\ActivityPub\Dto\KeyPair;
 use Rikudou\ActivityPub\Dto\PublicKey;
-use Rikudou\ActivityPub\Server\OpenSslActorKeyGenerator;
+use Rikudou\ActivityPub\Server\KeyGenerator\OpenSslActorKeyGenerator;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActor;
 use Rikudou\ActivityPub\Vocabulary\Extended\Actor\Person;
 
@@ -512,7 +512,7 @@ Now let's take a look at a hypothetical service that sends your requests:
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
-use Rikudou\ActivityPub\Server\RequestSigner;
+use Rikudou\ActivityPub\Server\Signing\RequestSigner;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActivity;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActor;
 
@@ -576,7 +576,7 @@ Of course the reverse, validating an incoming request, is also possible!
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Rikudou\ActivityPub\Server\RequestValidator;
+use Rikudou\ActivityPub\Server\Signing\RequestValidator;
 
 class IncomingActivityHandler
 {

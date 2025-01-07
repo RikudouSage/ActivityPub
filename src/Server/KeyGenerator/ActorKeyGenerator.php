@@ -1,6 +1,6 @@
 <?php
 
-namespace Rikudou\ActivityPub\Server;
+namespace Rikudou\ActivityPub\Server\KeyGenerator;
 
 use Rikudou\ActivityPub\Dto\KeyPair;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActor;

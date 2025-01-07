@@ -1,10 +1,11 @@
 <?php
 
-namespace Rikudou\ActivityPub\Server;
+namespace Rikudou\ActivityPub\Server\KeyGenerator;
 
 use Rikudou\ActivityPub\Dto\KeyPair;
 use Rikudou\ActivityPub\Dto\PublicKey;
 use Rikudou\ActivityPub\Exception\CryptographyException;
+use Rikudou\ActivityPub\Server\KeyGenerator\ActorKeyGenerator;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActor;
 
 final readonly class OpenSslActorKeyGenerator implements ActorKeyGenerator
