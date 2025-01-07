@@ -250,7 +250,7 @@ echo json_encode($cat, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT), PHP_EOL;
 }
 ```
 
-Now, if you want to make sure your can always has some lives, you can mark the property as required:
+Now, if you want to make sure your cat always has some lives, you can mark the property as required:
 
 ```php
 <?php
