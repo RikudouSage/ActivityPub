@@ -80,8 +80,6 @@ There are multiple modes of validation:
 - **recommended** - a custom opinionated set of rules, stricter than **strict**, but should prevent you making
   some mistakes which are technically correct but make no real sense. Some bugs are possible for edge cases.
 
-Validations can be changed for each object individually.
-
 For example:
 
 ```php
