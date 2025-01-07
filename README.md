@@ -340,3 +340,130 @@ All this prints this complicated-looking ActivityPub activity which can be sent 
   ]
 }
 ```
+
+## Server
+
+In addition to the ActivityPub object, there are also various helpers for implementing ActivityPub in your server.
+All of them rely on the PSR abstractions, so it should be easy to use them with your favourite http client or
+a framework of choice.
+
+### Request signing and validating
+
+While not part of the ActivityPub protocol itself, you won't get far in the Fediverse without signing your request - almost no
+mainstream software accepts activities that are unsigned. For signing to work, each actor must be publicly accessible at the URL
+pointed to in its ID and have a `publicKey` property with the public key defined.
+
+For this reason, this package includes two things:
+
+1. A non-standard `publicKey` property available for all actors
+   - If you use the `Recommended` validator mode, this property is required for all actors
+2. An `ActorKeyGenerator` service which generates a private and public key-pair that should be stored in a database
+  for all actors.
+
+Example:
+
+```php
+<?php
+
+use Rikudou\ActivityPub\Dto\KeyPair;
+use Rikudou\ActivityPub\Dto\PublicKey;
+use Rikudou\ActivityPub\Server\OpenSslActorKeyGenerator;
+use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActor;
+use Rikudou\ActivityPub\Vocabulary\Extended\Actor\Person;
+
+function storePrivateKeyInDatabase(ActivityPubActor $actor, KeyPair $keyPair): void
+{
+    $privateKey = $keyPair->privateKey;
+    // todo store it somewhere securely
+}
+
+// create a minimal valid Actor object
+$me = new Person();
+$me->id = 'https://example.com/person/1';
+$me->inbox = 'https://example.com/person/1/inbox';
+$me->outbox = 'https://example.com/person/1/outbox';
+$me->following = 'https://example.com/person/1/following';
+$me->followers = 'https://example.com/person/1/followers';
+
+// instantiate a specific implementation of the KeyGenerator interface, there's currently only this one
+$keyGenerator = new OpenSslActorKeyGenerator();
+
+// generate the private and public key-pair
+// if you provide an instance of actor as the first parameter, it will automatically create
+$keyPair = $keyGenerator->generate($me);
+
+// alternatively, you can assign the public key manually
+$keyPair = $keyGenerator->generate();
+$me->publicKey = new PublicKey(
+    // adding #main-key is a convention, and it's not really important what exactly is there, important is that you can fetch
+    // the public key at that URL and that it's unique (thus it cannot be the same as the owner id)
+    id: $me->id . '#main-key',
+    owner: $me->id,
+    publicKeyPem: $keyPair->publicKey,
+);
+```
+
+Now you have an actor who can send signed requests!
+
+Now let's take a look at a hypothetical service that sends your requests:
+
+```php
+<?php
+
+use GuzzleHttp\Psr7\Utils;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Rikudou\ActivityPub\Server\RequestSigner;
+use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActivity;
+use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActor;
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+class ActivitySender
+{
+    public function __construct(
+        private RequestFactoryInterface $requestFactory,
+        // this is the service used for signing requests, more specifically this is an interface implemented by RequestSignerAndValidator
+        private RequestSigner $requestSigner,
+        private ClientInterface $httpClient,
+    ) {
+    }
+
+    public function sendOutgoingActivity(
+        ActivityPubActor $actor,
+        #[SensitiveParameter]
+        string $actorPrivateKey,
+        ActivityPubActivity $activity,
+    ): void {
+        // you should send the activity to other fields as well, this is just for illustration
+        $recipients = $activity->to;
+
+        foreach ($recipients as $recipient) {
+            // for simplicity, let's assume this is always an actor, but it can also be a link
+            assert($recipient instanceof ActivityPubActor);
+
+            // you need to specify at least the request method,
+            $request = $this->requestFactory
+                ->createRequest('POST', $recipient->inbox)
+                ->withBody(
+                    Utils::streamFor(
+                        json_encode($activity),
+                    ),
+                )
+            ;
+
+            // now let's sign it!
+            $request = $this->requestSigner->signRequest(
+                $request,
+                $actor->publicKey->id,
+                $actorPrivateKey,
+            );
+
+            $response = $this->httpClient->sendRequest($request);
+            if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
+                // todo handle bad responses in some way
+            }
+        }
+    }
+}
+```

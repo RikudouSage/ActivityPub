@@ -18,6 +18,10 @@
     "require": {
         "php": "^8.4",
         "psr/http-client": "^1.0",
-        "ext-openssl": "*"
+        "ext-openssl": "*",
+        "psr/http-factory": "^1.1"
+    },
+    "require-dev": {
+        "guzzlehttp/guzzle": "^7.9"
     }
 }
