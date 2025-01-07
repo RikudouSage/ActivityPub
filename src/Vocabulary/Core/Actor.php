@@ -116,6 +116,8 @@ class Actor extends BaseObject implements ActivityPubActor
 
     /**
      * A list of supplementary Collections which may be of interest.
+     *
+     * @var array<Link>
      */
     public ?array $streams = null {
         get => $this->streams;

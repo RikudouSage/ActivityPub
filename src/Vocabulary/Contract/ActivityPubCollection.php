@@ -9,32 +9,49 @@ use Rikudou\ActivityPub\Vocabulary\Core\Link;
 
 interface ActivityPubCollection extends ActivityPubObject
 {
-    #[RequiredProperty(ValidatorMode::Lax)]
+    /**
+     * A non-negative integer specifying the total number of objects contained by the logical view of the collection.
+     * This number might not reflect the actual number of items serialized within the Collection object instance.
+     */
+    #[RequiredProperty(ValidatorMode::Recommended)]
     public ?int $totalItems = 0 {
         get;
         set;
     }
 
     /**
-     * @var array<ActivityPubObject|Link>|null
+     * In a paged Collection, indicates the page that contains the most recently updated member items.
      */
-    public ?array $items = null {
-        get;
-        set;
-    }
-
     public CollectionPage|Link|null $current = null {
         get;
         set (CollectionPage|Link|string|null $value);
     }
 
+    /**
+     * In a paged Collection, indicates the furthest preceding page of items in the collection.
+     */
     public CollectionPage|Link|null $first = null {
         get;
         set (CollectionPage|Link|string|null $value);
     }
 
+    /**
+     * In a paged Collection, indicates the furthest proceeding page of the collection.
+     */
     public CollectionPage|Link|null $last = null {
         get;
         set (CollectionPage|Link|string|null $value);
+    }
+
+    /**
+     * Identifies the items contained in a collection. The items might be ordered or unordered.
+     *
+     * Note that PHP arrays are always ordered.
+     *
+     * @var array<ActivityPubObject|Link>|null
+     */
+    public ?array $items = null {
+        get;
+        set;
     }
 }
