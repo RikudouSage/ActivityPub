@@ -1,6 +1,6 @@
 {
     "name": "rikudou/activity-pub",
-    "description": "Abstraction for working with ActivityPub objects",
+    "description": "A strongly typed, validated and developer-friendly ActivityPub implementation in PHP",
     "type": "library",
     "license": "MIT",
     "autoload": {
