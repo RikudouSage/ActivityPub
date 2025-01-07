@@ -8,18 +8,21 @@ Also some widely used unofficial extensions.
 <!-- TOC -->
 * [ActivityPub for PHP](#activitypub-for-php)
   * [Table of contents](#table-of-contents)
-  * [Naming](#naming)
-  * [Objects and activities](#objects-and-activities)
-  * [Validations](#validations)
-  * [Creating your own types](#creating-your-own-types)
+  * [Objects](#objects)
+    * [Naming](#naming)
+    * [Objects and activities](#objects-and-activities)
+    * [Validations](#validations)
+    * [Creating your own types](#creating-your-own-types)
 <!-- TOC -->
 
-## Naming
+## Objects
+
+### Naming
 
 All object names are the same as in the ActivityPub/ActivityStreams specifications, with the sole exception of the
 base `Object` which is called `BaseObject` because PHP disallows having a class called `Object`.
 
-## Objects and activities
+### Objects and activities
 
 To construct an object, simply create it as you normally would, for example, let's construct a note:
 
@@ -62,7 +65,7 @@ This prints:
 }
 ```
 
-## Validations
+### Validations
 
 All property assignments are validated using various set of rules depending on the type of the property and object.
 There are multiple modes of validation:
@@ -135,7 +138,7 @@ echo json_encode($note, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
 The above code prints the same JSON.
 
-## Creating your own types
+### Creating your own types
 
 All the ActivityPub objects can be extended by your own classes. The built-in ones use property hooks to automatically 
 validate the values, but you can do it any other way, just make sure the properties are publicly readable.
