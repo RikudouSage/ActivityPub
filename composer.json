@@ -6,7 +6,10 @@
     "autoload": {
         "psr-4": {
             "Rikudou\\ActivityPub\\": "src/"
-        }
+        },
+        "files": [
+            "src/functions.php"
+        ]
     },
     "authors": [
         {

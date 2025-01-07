@@ -138,7 +138,29 @@ $note->id = '123';
 echo json_encode($note, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 ```
 
-The above code prints the same JSON.
+The above code prints the same JSON. Note that if you change the validator mode for an individual object, the global
+setting doesn't have any effect anymore, until you manually set it back to null.
+
+The last option is to use the `runInNoValidationContext` function:
+
+```php
+<?php
+
+use Rikudou\ActivityPub\Vocabulary\Extended\Object\Note;
+use function Rikudou\ActivityPub\runInNoValidationContext;
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+$note = new Note();
+runInNoValidationContext(
+    fn () => $note->id = '123',
+);
+
+echo json_encode($note, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+```
+
+The same caveats as for changing the global mode exist (because all this function does is it changes the global mode,
+runs your function, changes it back to the original value).
 
 ### Parsing JSON into types
 

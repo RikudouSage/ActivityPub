@@ -12,9 +12,12 @@ use Stringable;
 trait ObjectValidatorTrait
 {
     #[IgnoreProperty]
-    public ValidatorMode $validatorMode {
+    public ?ValidatorMode $validatorMode = null {
         get {
-            $this->validatorMode ??= GlobalSettings::$validatorMode;
+            if ($this->validatorMode === null) {
+                return GlobalSettings::$validatorMode;
+            }
+
             return $this->validatorMode;
         }
         set => $this->validatorMode = $value;
