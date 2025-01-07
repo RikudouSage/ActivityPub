@@ -37,6 +37,9 @@ class Activity extends BaseObject implements ActivityPubActivity
             if (is_string($value)) {
                 $value = Link::fromString($value);
             }
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
+            }
 
             if ($this->__directSet) {
                 $this->actor = $value;
@@ -58,6 +61,9 @@ class Activity extends BaseObject implements ActivityPubActivity
         set (ActivityPubObject|Link|array|null|string $value) {
             if (is_string($value)) {
                 $value = Link::fromString($value);
+            }
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
             }
 
             if ($this->__directSet) {
@@ -81,6 +87,9 @@ class Activity extends BaseObject implements ActivityPubActivity
         set (ActivityPubObject|Link|array|null|string $value) {
             if (is_string($value)) {
                 $value = Link::fromString($value);
+            }
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
             }
 
             if ($this->__directSet) {
@@ -140,6 +149,9 @@ class Activity extends BaseObject implements ActivityPubActivity
         set (ActivityPubObject|Link|array|null|string $value) {
             if (is_string($value)) {
                 $value = Link::fromString($value);
+            }
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
             }
 
             if ($this->__directSet) {

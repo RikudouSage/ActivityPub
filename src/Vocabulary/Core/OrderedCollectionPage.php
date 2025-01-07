@@ -13,6 +13,10 @@ use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubObject;
  */
 class OrderedCollectionPage extends CollectionPage
 {
+    public string $type {
+        get => 'OrderedCollectionPage';
+    }
+
     /**
      * @var array<ActivityPubObject|Link>|null
      */

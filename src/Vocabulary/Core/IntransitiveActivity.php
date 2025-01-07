@@ -12,6 +12,10 @@ use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubObject;
  */
 class IntransitiveActivity extends Activity implements ActivityPubIntransitiveActivity
 {
+    public string $type {
+        get => 'IntransitiveActivity';
+    }
+
     /**
      * @internal
      * @var ActivityPubObject|Link|array<ActivityPubObject|Link>|null

@@ -10,6 +10,10 @@ use Rikudou\ActivityPub\Enum\ValidatorMode;
  */
 class CollectionPage extends Collection
 {
+    public string $type {
+        get => 'CollectionPage';
+    }
+
     /**
      * Identifies the {@see Collection} to which a CollectionPage objects items belong.
      */

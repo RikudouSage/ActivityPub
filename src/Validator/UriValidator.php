@@ -3,12 +3,13 @@
 namespace Rikudou\ActivityPub\Validator;
 
 use Rikudou\ActivityPub\Enum\ValidatorMode;
+use Rikudou\ActivityPub\Vocabulary\Core\Link;
 
 final readonly class UriValidator implements Validator
 {
     public function __invoke(mixed $value, ValidatorMode $mode): array
     {
-        if (!is_string($value)) {
+        if (!is_string($value) && !$value instanceof Link) {
             return ['the value must be a string that contains a valid uri'];
         }
 

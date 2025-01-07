@@ -12,6 +12,7 @@ use Rikudou\ActivityPub\Validator\Condition\IsValidatorMode;
 use Rikudou\ActivityPub\Validator\Condition\NotNull;
 use Rikudou\ActivityPub\Validator\ConditionalValidator;
 use Rikudou\ActivityPub\Validator\IsInstanceOfValidator;
+use Rikudou\ActivityPub\Validator\IsNullValidator;
 use Rikudou\ActivityPub\Validator\IsStringValidator;
 use Rikudou\ActivityPub\Validator\OrValidator;
 use Rikudou\ActivityPub\Validator\PropertyValueIsStringValidator;
@@ -19,6 +20,10 @@ use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActor;
 
 class Actor extends BaseObject implements ActivityPubActor
 {
+    public string $type {
+        get => 'Actor';
+    }
+
     /**
      * A reference to an {@see OrderedCollection} comprised of all the messages received by the actor. Also the
      * target of all incoming messages for the actor.
@@ -195,7 +200,10 @@ class Actor extends BaseObject implements ActivityPubActor
             ),
             'endpoints' => new CompoundValidator(
                 new AllIterableChildrenValidator(
-                    new IsStringValidator(),
+                    new OrValidator(
+                        new IsStringValidator(),
+                        new IsNullValidator(),
+                    ),
                 ),
                 new ConditionalValidator(
                     new IsValidatorMode(ValidatorMode::Recommended),

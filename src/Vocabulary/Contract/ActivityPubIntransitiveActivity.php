@@ -11,7 +11,7 @@ interface ActivityPubIntransitiveActivity extends ActivityPubActivity
      * @internal
      * @var ActivityPubObject|Link|array<ActivityPubObject|Link>|null
      */
-    public ActivityPubObject|Link|array|null $object = null {
+    public ActivityPubObject|Link|array|null $object {
         get;
         set (ActivityPubObject|Link|array|null|string $value);
     }

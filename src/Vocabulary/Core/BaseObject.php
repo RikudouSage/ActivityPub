@@ -106,6 +106,9 @@ class BaseObject implements ActivityPubObject
             if (is_string($value)) {
                 $value = Link::fromString($value);
             }
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
+            }
 
             if ($this->__directSet) {
                 $this->attachment = $value;
@@ -128,6 +131,9 @@ class BaseObject implements ActivityPubObject
             if (is_string($value)) {
                 $value = Link::fromString($value);
             }
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
+            }
 
             if ($this->__directSet) {
                 $this->attributedTo = $value;
@@ -148,6 +154,9 @@ class BaseObject implements ActivityPubObject
         set (Link|ActivityPubObject|array|null|string $value) {
             if (is_string($value)) {
                 $value = Link::fromString($value);
+            }
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
             }
 
             if ($this->__directSet) {
@@ -246,6 +255,9 @@ class BaseObject implements ActivityPubObject
             if (is_string($value)) {
                 $value = Link::fromString($value);
             }
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
+            }
 
             if ($this->__directSet) {
                 $this->icon = $value;
@@ -265,6 +277,9 @@ class BaseObject implements ActivityPubObject
         set (Image|Link|array|null|string $value) {
             if (is_string($value)) {
                 $value = Link::fromString($value);
+            }
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
             }
 
             if ($this->__directSet) {
@@ -286,6 +301,9 @@ class BaseObject implements ActivityPubObject
             if (is_string($value)) {
                 $value = Link::fromString($value);
             }
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
+            }
 
             if ($this->__directSet) {
                 $this->inReplyTo = $value;
@@ -305,6 +323,9 @@ class BaseObject implements ActivityPubObject
         set (ActivityPubObject|Link|array|null|string $value) {
             if (is_string($value)) {
                 $value = Link::fromString($value);
+            }
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
             }
 
             if ($this->__directSet) {
@@ -414,6 +435,9 @@ class BaseObject implements ActivityPubObject
             if (is_string($value)) {
                 $value = Link::fromString($value);
             }
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
+            }
 
             if ($this->__directSet) {
                 $this->tag = $value;
@@ -452,6 +476,9 @@ class BaseObject implements ActivityPubObject
             if (is_string($value)) {
                 $value = Link::fromString($value);
             }
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
+            }
 
             if ($this->__directSet) {
                 $this->url = $value;
@@ -475,6 +502,7 @@ class BaseObject implements ActivityPubObject
             if (!is_array($value)) {
                 $value = [$value];
             }
+            $value = $this->convertStringArrayToLinkArray($value);
 
             if ($this->__directSet) {
                 $this->to = $value;
@@ -498,6 +526,7 @@ class BaseObject implements ActivityPubObject
             if (!is_array($value)) {
                 $value = [$value];
             }
+            $value = $this->convertStringArrayToLinkArray($value);
 
             if ($this->__directSet) {
                 $this->bto = $value;
@@ -521,6 +550,7 @@ class BaseObject implements ActivityPubObject
             if (!is_array($value)) {
                 $value = [$value];
             }
+            $value = $this->convertStringArrayToLinkArray($value);
 
             if ($this->__directSet) {
                 $this->cc = $value;
@@ -544,6 +574,7 @@ class BaseObject implements ActivityPubObject
             if (!is_array($value)) {
                 $value = [$value];
             }
+            $value = $this->convertStringArrayToLinkArray($value);
 
             if ($this->__directSet) {
                 $this->bcc = $value;
@@ -818,5 +849,20 @@ class BaseObject implements ActivityPubObject
 
     public string $type {
         get => 'Object';
+    }
+
+    /**
+     * @param array<ActivityPubActor|Link|string> $array
+     * @return array<ActivityPubActor|Link>
+     */
+    protected function convertStringArrayToLinkArray(array $array): array
+    {
+        return array_map(function (ActivityPubActor|Link|string $item): ActivityPubActor|Link {
+            if (is_string($item)) {
+                $item = Link::fromString($item);
+            }
+
+            return $item;
+        }, $array);
     }
 }

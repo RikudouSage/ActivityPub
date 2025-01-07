@@ -105,7 +105,7 @@ interface ActivityPubObject extends JsonSerializable
      * @var string|array<string>|null
      */
     #[LangMapProperty]
-    public string|array|null $name = null {
+    public string|array|null $name {
         get;
         set;
     }

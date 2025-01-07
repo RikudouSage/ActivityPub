@@ -14,7 +14,7 @@ interface ActivityPubCollection extends ActivityPubObject
      * This number might not reflect the actual number of items serialized within the Collection object instance.
      */
     #[RequiredProperty(ValidatorMode::Recommended)]
-    public ?int $totalItems = 0 {
+    public ?int $totalItems {
         get;
         set;
     }
@@ -22,7 +22,7 @@ interface ActivityPubCollection extends ActivityPubObject
     /**
      * In a paged Collection, indicates the page that contains the most recently updated member items.
      */
-    public CollectionPage|Link|null $current = null {
+    public CollectionPage|Link|null $current {
         get;
         set (CollectionPage|Link|string|null $value);
     }
@@ -30,7 +30,7 @@ interface ActivityPubCollection extends ActivityPubObject
     /**
      * In a paged Collection, indicates the furthest preceding page of items in the collection.
      */
-    public CollectionPage|Link|null $first = null {
+    public CollectionPage|Link|null $first {
         get;
         set (CollectionPage|Link|string|null $value);
     }
@@ -38,7 +38,7 @@ interface ActivityPubCollection extends ActivityPubObject
     /**
      * In a paged Collection, indicates the furthest proceeding page of the collection.
      */
-    public CollectionPage|Link|null $last = null {
+    public CollectionPage|Link|null $last {
         get;
         set (CollectionPage|Link|string|null $value);
     }
@@ -50,7 +50,7 @@ interface ActivityPubCollection extends ActivityPubObject
      *
      * @var array<ActivityPubObject|Link>|null
      */
-    public ?array $items = null {
+    public ?array $items {
         get;
         set;
     }

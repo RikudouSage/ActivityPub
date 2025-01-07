@@ -9,7 +9,7 @@ interface TypeParser
     /**
      * @param array<string> $data
      */
-    public function parse(array $data): ActivityPubObject;
+    public function parse(array $data, bool $allowCustomProperties = false): ActivityPubObject;
 
-    public function parseJson(string $data): ActivityPubObject;
+    public function parseJson(string $data, bool $allowCustomProperties = false): ActivityPubObject;
 }

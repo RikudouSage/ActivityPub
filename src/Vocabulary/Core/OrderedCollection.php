@@ -10,6 +10,10 @@ use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubObject;
  */
 class OrderedCollection extends Collection
 {
+    public string $type {
+        get => 'OrderedCollection';
+    }
+
     /**
      * @var array<ActivityPubObject|Link>|null
      */

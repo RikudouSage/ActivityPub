@@ -18,6 +18,10 @@ use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubObject;
  */
 class Collection extends BaseObject implements ActivityPubCollection
 {
+    public string $type {
+        get => 'Collection';
+    }
+
     /**
      * A non-negative integer specifying the total number of objects contained by the logical view of the collection.
      * This number might not reflect the actual number of items serialized within the Collection object instance.
