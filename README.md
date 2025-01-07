@@ -75,7 +75,7 @@ There are multiple modes of validation:
 
 - **none** - no validation takes place
 - **lax** - not as strict as the **strict** mode, leaves out some stuff that is required by the specification
-  but isn't used in real-world scenarios
+  but isn't required in real-world scenarios
 - **strict** - strict adherence to the ActivityPub/ActivityStreams specifications
 - **recommended** - a custom opinionated set of rules, stricter than **strict**, but should prevent you making
   some mistakes which are technically correct but make no real sense. Some bugs are possible for edge cases.
