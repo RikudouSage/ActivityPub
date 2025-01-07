@@ -141,6 +141,57 @@ echo json_encode($note, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
 The above code prints the same JSON.
 
+### Parsing JSON into types
+
+While exporting ActivityPub objects to JSON is great, you'll need the exact opposite if you want to handle incoming
+activities!
+
+Luckily for us, there's a `TypeParser` (more specifically, a class implementing the interface, `DefaultTypeParser`).
+Let's take the previous example as our input:
+
+```php
+<?php
+
+use Rikudou\ActivityPub\Vocabulary\Extended\Object\Note;
+use Rikudou\ActivityPub\Vocabulary\Parser\DefaultTypeParser;
+
+$parser = new DefaultTypeParser();
+
+$json = <<<'JSON'
+{
+    "type": "Note",
+    "@context": "https://www.w3.org/ns/activitystreams",
+    "id": "https://example.com/notes/123",
+    "attributedTo": "https://example.com/user/some-actor",
+    "content": "Hello <strong>there</strong>!",
+    "inReplyTo": "https://example.com/notes/120",
+    "published": "2025-01-06T22:52:11+01:00",
+    "to": [
+        "https://example.com/user/some-other-actor"
+    ],
+    "source": {
+        "content": "Hello **there**",
+        "mediaType": "text/markdown"
+    }
+}
+JSON;
+
+$note = $parser->parseJson($json);
+
+// all the following assertions are true
+assert($note instanceof Note);
+assert($note->context === "https://www.w3.org/ns/activitystreams");
+assert($note->id === "https://example.com/notes/123");
+assert((string) $note->attributedTo === "https://example.com/user/some-actor");
+assert($note->content === "Hello <strong>there</strong>!");
+assert((string) $note->inReplyTo === "https://example.com/notes/120");
+assert($note->published->format('c') === "2025-01-06T22:52:11+01:00");
+assert(count($note->to) === 1);
+assert((string) $note->to[0] === "https://example.com/user/some-other-actor");
+assert($note->source->content === "Hello **there**");
+assert($note->source->mediaType === "text/markdown");
+```
+
 ### Creating your own types
 
 All the ActivityPub objects can be extended by your own classes. The built-in ones use property hooks to automatically 
@@ -342,6 +393,52 @@ All this prints this complicated-looking ActivityPub activity which can be sent 
     "https://www.w3.org/ns/activitystreams#Public"
   ]
 }
+```
+
+Now, if your Cat object ever becomes so popular that everything using ActivityPub sends them back and forth,
+you might want to register the type in the parser, otherwise it would just throw an exception saying that it
+doesn't know about the Cat object.
+
+```php
+<?php
+
+use Rikudou\ActivityPub\Attribute\RequiredProperty;
+use Rikudou\ActivityPub\Enum\ValidatorMode;
+use Rikudou\ActivityPub\Vocabulary\Core\BaseObject;
+use Rikudou\ActivityPub\Vocabulary\Parser\DefaultTypeParser;
+
+final class Cat extends BaseObject
+{
+    public string $type {
+        get => 'Cat';
+    }
+
+    #[RequiredProperty(ValidatorMode::Lax)]
+    public ?int $lives = null;
+}
+
+$parser = new DefaultTypeParser();
+
+$parser->registerType('Cat', Cat::class);
+
+$catJson = <<<'JSON'
+{
+    "type": "Cat",
+    "lives": 9,
+    "@context": "https://www.w3.org/ns/activitystreams",
+    "id": "https://example.com/meow",
+    "name": "Meowth"
+}
+JSON;
+
+$reconstructedCat = $parser->parseJson($catJson);
+
+// all the following are true
+assert($reconstructedCat instanceof Cat);
+assert($reconstructedCat->lives === 9);
+assert($reconstructedCat->name === 'Meowth');
+assert($reconstructedCat->id === 'https://example.com/meow');
+
 ```
 
 ## Server

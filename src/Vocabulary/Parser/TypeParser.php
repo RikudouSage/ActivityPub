@@ -12,4 +12,10 @@ interface TypeParser
     public function parse(array $data, bool $allowCustomProperties = false): ActivityPubObject;
 
     public function parseJson(string $data, bool $allowCustomProperties = false): ActivityPubObject;
+
+    /**
+     * @param string $typeName
+     * @param class-string<ActivityPubObject> $class
+     */
+    public function registerType(string $typeName, string $class): void;
 }

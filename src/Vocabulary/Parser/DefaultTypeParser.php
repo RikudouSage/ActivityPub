@@ -86,6 +86,11 @@ final class DefaultTypeParser implements TypeParser
         return $this->parse(json_decode($data, true, flags: JSON_THROW_ON_ERROR), $allowCustomProperties);
     }
 
+    public function registerType(string $typeName, string $class): void
+    {
+        $this->typeMap[$typeName] = $class;
+    }
+
     /**
      * @return array<class-string<ActivityPubObject>>
      */
