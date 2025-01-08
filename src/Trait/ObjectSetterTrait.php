@@ -30,4 +30,17 @@ trait ObjectSetterTrait
             $this->__directSet = false;
         }
     }
+
+    public function get(string $propertyName): mixed
+    {
+        if (property_exists($this, $propertyName)) {
+            return $this->{$propertyName};
+        }
+
+        if (array_key_exists($propertyName, $this->customProperties)) {
+            return $this->customProperties[$propertyName];
+        }
+
+        return null;
+    }
 }

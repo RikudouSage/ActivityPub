@@ -300,4 +300,5 @@ interface ActivityPubObject extends JsonSerializable
     }
 
     public function set(string $propertyName, mixed $value): void;
+    public function get(string $propertyName): mixed;
 }
