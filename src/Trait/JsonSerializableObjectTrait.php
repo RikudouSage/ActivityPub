@@ -64,6 +64,12 @@ trait JsonSerializableObjectTrait
             $result[$targetName] = $value;
         }
 
+        if (property_exists($this, 'customProperties') && is_array($this->customProperties)) {
+            foreach ($this->customProperties as $property => $value) {
+                $result[$property] = $this->convertToSerializableValue($value);
+            }
+        }
+
         return $result;
     }
 

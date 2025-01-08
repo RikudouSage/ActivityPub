@@ -15,6 +15,7 @@ use Rikudou\ActivityPub\Exception\InvalidValueException;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActor;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubObject;
 use SplFileInfo;
+use function Rikudou\ActivityPub\runInNoValidationContext;
 
 final class DefaultTypeParser implements TypeParser
 {
@@ -70,6 +71,12 @@ final class DefaultTypeParser implements TypeParser
                 $value = new PublicKey(...$value);
             } else if (is_array($value) && $key === 'source') {
                 $value = new Source(...$value);
+            } else if (!property_exists($instance, $key)) {
+                if ($allowCustomProperties) {
+                    runInNoValidationContext(fn () => $instance->set($key, $value));
+                } else {
+                    $instance->set($key, $value);
+                }
             }
 
             $instance->$key = $value;

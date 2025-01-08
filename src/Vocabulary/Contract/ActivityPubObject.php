@@ -298,4 +298,6 @@ interface ActivityPubObject extends JsonSerializable
         get;
         set (DateInterval|null|string $value);
     }
+
+    public function set(string $propertyName, mixed $value): void;
 }

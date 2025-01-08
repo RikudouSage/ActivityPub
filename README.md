@@ -169,6 +169,40 @@ echo json_encode($note, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 The same caveats as for changing the global mode exist (because all this function does is it changes the global mode,
 runs your function, changes it back to the original value).
 
+### Non-standard properties
+
+If you wish to use non-standard properties, you can use the setter:
+
+```php
+<?php
+
+use Rikudou\ActivityPub\Vocabulary\Extended\Object\Note;
+
+$note = new Note();
+$note->id = 'https://example.com/note/1';
+$note->set('customProperty', 'customValue');
+
+echo json_encode($note, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), PHP_EOL;
+```
+
+Note that unless you disable validation, custom properties are not allowed, so the above needs to run in
+the no-validation context:
+
+```php
+<?php
+
+use Rikudou\ActivityPub\Vocabulary\Extended\Object\Note;
+use function Rikudou\ActivityPub\runInNoValidationContext;
+
+require __DIR__ . '/vendor/autoload.php';
+
+$note = new Note();
+$note->id = 'https://example.com/note/1';
+runInNoValidationContext(fn () => $note->set('customProperty', 'customValue'));
+
+echo json_encode($note, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), PHP_EOL;
+```
+
 ### Parsing JSON into types
 
 While exporting ActivityPub objects to JSON is great, you'll need the exact opposite if you want to handle incoming
