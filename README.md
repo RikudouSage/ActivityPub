@@ -624,3 +624,55 @@ class IncomingActivityHandler
 }
 
 ```
+
+### Fetching objects
+
+Fetching remote objects can be handled using the `ObjectFetcher` and `WebFinger` services (implemented by `ActivityPubObjectFetcher`
+and `DefaultWebFinger` respectively).
+
+```php
+<?php
+
+use Psr\Http\Message\ResponseInterface;
+use Rikudou\ActivityPub\Exception\ActivityPubException;
+use Rikudou\ActivityPub\Exception\ResourceException;
+use Rikudou\ActivityPub\Exception\WebFingerException;
+use Rikudou\ActivityPub\Server\ObjectFetcher\ObjectFetcher;
+use Rikudou\ActivityPub\Server\ObjectFetcher\WebFinger;
+use Rikudou\ActivityPub\Vocabulary\Extended\Actor\Person;
+use Rikudou\ActivityPub\Vocabulary\Extended\Object\Article;
+
+class SomeController
+{
+    public function __construct(
+        private WebFinger $webFinger,
+        private ObjectFetcher $objectFetcher,
+    ) {
+    }
+
+    public function someMethod(): ResponseInterface
+    {
+        $account = 'me@example.com';
+
+        try {
+            $webFingerResponse = $this->webFinger->find($account);
+            $object = $this->objectFetcher->fetch($webFingerResponse);
+            assert($object instanceof Person);
+            // todo do something with the object
+        } catch (WebFingerException $e) {
+            // todo handle that something went wrong
+        } catch (ResourceException $e) {
+            // todo handle that something went wrong with fetching the person
+        } catch (ActivityPubException $e) {
+            // todo handle all other exceptions thrown by the package
+        }
+    }
+
+    public function anotherMethod(): ResponseInterface
+    {
+        $resource = 'https://example.com/posts/1';
+        $object = $this->objectFetcher->fetch($resource);
+        assert($object instanceof Article);
+    }
+}
+```
