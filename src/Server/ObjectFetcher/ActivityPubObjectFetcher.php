@@ -41,7 +41,7 @@ final readonly class ActivityPubObjectFetcher implements ObjectFetcher
         }
 
         $request = $this->requestFactory->createRequest('GET', $url)
-            ->withHeader('Content-Type', 'application/activity+json')
+            ->withHeader('Accept', 'application/activity+json')
         ;
 
         try {
