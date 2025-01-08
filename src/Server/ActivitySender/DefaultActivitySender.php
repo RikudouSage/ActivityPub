@@ -80,7 +80,7 @@ final readonly class DefaultActivitySender implements ActivitySender
         }
     }
 
-    private function sendSingle(ActivityPubActivity $activity, Link $recipient, LocalActor $localActor, array &$exceptions): void
+    private function sendSingle(ActivityPubActivity $activity, string $recipient, LocalActor $localActor, array &$exceptions): void
     {
         $request = $this->requestFactory->createRequest('POST', $recipient)
             ->withBody($this->streamFactory->createStream(json_encode($activity)))
@@ -101,50 +101,42 @@ final readonly class DefaultActivitySender implements ActivitySender
 
     /**
      * @param array<string|Link|ActivityPubActor> $recipients
-     * @return array<Link>
+     * @return array<string|Link>
      */
     private function getRecipientInboxes(array $recipients): iterable
     {
-        $mappedIterables = Iterables::map(function (string|Link|ActivityPubActor $recipient): ?iterable {
+        foreach ($recipients as $recipient) {
             if ($recipient instanceof ActivityPubActor) {
                 if ($recipient->endpoints instanceof Endpoints && $recipient->endpoints->sharedInbox) {
-                    return [$recipient->endpoints->sharedInbox];
+                    yield $recipient->endpoints->sharedInbox;
                 }
-
-                if (!$recipient->inbox) {
-                    return null;
+                if ($recipient->inbox) {
+                    yield $recipient->inbox;
                 }
-                return [$recipient->inbox];
-            }
-
-            if ((string) $recipient === ActivityPubConstants::PUBLIC_AUDIENCE) {
-                return null;
-            }
-
-            try {
-                $object = $this->objectFetcher->fetch($recipient, true);
-            } catch (ActivityPubException) {
-                return null;
-            }
-
-            if ($object instanceof ActivityPubActor) {
-                return [$object->inbox];
-            }
-
-            if ($object instanceof ActivityPubCollection) {
-                foreach ($this->collectionResolver->resolve($object) as $item) {
-                    if ($item instanceof ActivityPubActor) {
-                        if ($item->endpoints instanceof Endpoints && $item->endpoints->sharedInbox) {
-                            yield $item->endpoints->sharedInbox;
-                        } else if ($item->inbox) {
-                            yield $item->inbox;
+            } else if ((string) $recipient !== ActivityPubConstants::PUBLIC_AUDIENCE) {
+                try {
+                    $object = $this->objectFetcher->fetch($recipient, true);
+                    if ($object instanceof ActivityPubActor) {
+                        if ($object->endpoints instanceof Endpoints && $object->endpoints->sharedInbox) {
+                            yield $object->endpoints->sharedInbox;
+                        } else if ($object->inbox) {
+                            yield $object->inbox;
+                        }
+                    } else if ($object instanceof ActivityPubCollection) {
+                        foreach ($this->collectionResolver->resolve($object) as $item) {
+                            if ($item instanceof ActivityPubActor) {
+                                if ($item->endpoints instanceof Endpoints && $item->endpoints->sharedInbox) {
+                                    yield $item->endpoints->sharedInbox;
+                                } else if ($item->inbox) {
+                                    yield $item->inbox;
+                                }
+                            }
                         }
                     }
+                } catch (ActivityPubException) {
+                   // ignore
                 }
             }
-        }, $recipients);
-        $zipped = Iterables::zip(...$mappedIterables);
-
-        return Iterables::filter($zipped);
+        }
     }
 }
