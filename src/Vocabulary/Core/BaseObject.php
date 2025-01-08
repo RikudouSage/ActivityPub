@@ -502,7 +502,9 @@ class BaseObject implements ActivityPubObject
             if (!is_array($value) && $value !== null) {
                 $value = [$value];
             }
-            $value = $this->convertStringArrayToLinkArray($value);
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
+            }
 
             if ($this->__directSet) {
                 $this->to = $value;
@@ -526,7 +528,9 @@ class BaseObject implements ActivityPubObject
             if (!is_array($value) && $value !== null) {
                 $value = [$value];
             }
-            $value = $this->convertStringArrayToLinkArray($value);
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
+            }
 
             if ($this->__directSet) {
                 $this->bto = $value;
@@ -550,7 +554,9 @@ class BaseObject implements ActivityPubObject
             if (!is_array($value) && $value !== null) {
                 $value = [$value];
             }
-            $value = $this->convertStringArrayToLinkArray($value);
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
+            }
 
             if ($this->__directSet) {
                 $this->cc = $value;
@@ -574,7 +580,9 @@ class BaseObject implements ActivityPubObject
             if (!is_array($value) && $value !== null) {
                 $value = [$value];
             }
-            $value = $this->convertStringArrayToLinkArray($value);
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
+            }
 
             if ($this->__directSet) {
                 $this->bcc = $value;
