@@ -4,6 +4,6 @@ namespace Rikudou\ActivityPub\Server\Abstraction;
 
 interface LocalActor
 {
-    public function getPrivateKey(): string;
-    public function getKeyId(): string;
+    public function getPrivateKey(): ?string;
+    public function getKeyId(): ?string;
 }
