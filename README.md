@@ -19,6 +19,7 @@ Also some widely used unofficial extensions.
     * [Request signing](#request-signing)
     * [Request validating](#request-validating)
     * [Fetching objects](#fetching-objects)
+  * [Symfony usage](#symfony-usage)
 <!-- TOC -->
 
 ## Installation
@@ -681,4 +682,40 @@ class SomeController
         assert($object instanceof Article);
     }
 }
+```
+
+## Symfony usage
+
+To use this library in Symfony, simply configure the [PSR-7 Bridge](https://symfony.com/doc/current/components/psr7.html)
+and create the following file in `config/packages/activity_pub.yaml`:
+
+```yaml
+services:
+  Rikudou\ActivityPub\Server\KeyGenerator\ActorKeyGenerator:
+    class: Rikudou\ActivityPub\Server\KeyGenerator\OpenSslActorKeyGenerator
+
+  Rikudou\ActivityPub\Server\ObjectFetcher\ObjectFetcher:
+    class: Rikudou\ActivityPub\Server\ObjectFetcher\ActivityPubObjectFetcher
+    arguments:
+      $typeParser: '@Rikudou\ActivityPub\Vocabulary\Parser\TypeParser'
+      $requestFactory: '@Psr\Http\Message\RequestFactoryInterface'
+      $httpClient: '@Psr\Http\Client\ClientInterface'
+
+  Rikudou\ActivityPub\Vocabulary\Parser\TypeParser:
+    class: Rikudou\ActivityPub\Vocabulary\Parser\DefaultTypeParser
+
+  Rikudou\ActivityPub\Server\ObjectFetcher\WebFinger:
+    class: Rikudou\ActivityPub\Server\ObjectFetcher\DefaultWebFinger
+    arguments:
+      $httpClient: '@Psr\Http\Client\ClientInterface'
+      $requestFactory: '@Psr\Http\Message\RequestFactoryInterface'
+
+  Rikudou\ActivityPub\Server\Signing\RequestSignerAndValidator:
+    arguments:
+      $requestFactory: '@Psr\Http\Message\RequestFactoryInterface'
+      $httpClient: '@Psr\Http\Client\ClientInterface'
+      $typeParser: '@Rikudou\ActivityPub\Vocabulary\Parser\TypeParser'
+
+  Rikudou\ActivityPub\Server\Signing\RequestSigner: '@Rikudou\ActivityPub\Server\Signing\RequestSignerAndValidator'
+  Rikudou\ActivityPub\Server\Signing\RequestValidator: '@Rikudou\ActivityPub\Server\Signing\RequestSignerAndValidator'
 ```
