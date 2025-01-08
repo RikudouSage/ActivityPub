@@ -683,7 +683,11 @@ class BaseObject implements ActivityPubObject
 
     protected function getValidators(): iterable {
         return [
-            'id' => new UriValidator(),
+            'id' => new OrValidator(
+                new UriValidator(),
+                new IsInstanceOfValidator(OmittedID::class),
+                new IsInstanceOfValidator(NullID::class),
+            ),
             'context' => new CompoundValidator(
                 new ConditionalValidator(
                     new IsString(),
