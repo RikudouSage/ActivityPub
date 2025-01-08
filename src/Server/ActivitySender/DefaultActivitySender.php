@@ -21,7 +21,6 @@ use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActivity;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActor;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubCollection;
 use Rikudou\ActivityPub\Vocabulary\Core\Link;
-use Rikudou\Iterables\Iterables;
 
 final readonly class DefaultActivitySender implements ActivitySender
 {
@@ -38,9 +37,15 @@ final readonly class DefaultActivitySender implements ActivitySender
 
     /**
      * @param array<string|Link|ActivityPubActor> $additionalRecipients
+     * @param (callable(string $inboxUrl): bool)|null $receiverFilter
      */
-    public function send(ActivityPubActivity $activity, array $additionalRecipients = []): void
-    {
+    public function send(
+        ActivityPubActivity $activity,
+        array $additionalRecipients = [],
+        ?callable $receiverFilter = null,
+    ): void {
+        $receiverFilter ??= fn (string $inboxUrl): true => true;
+
         $recipients = [
             ...$additionalRecipients,
             ...$activity->to,
@@ -69,6 +74,9 @@ final readonly class DefaultActivitySender implements ActivitySender
         $recipients = $this->getRecipientInboxes($recipients);
         foreach ($recipients as $recipient) {
             if (isset($handled[$recipient])) {
+                continue;
+            }
+            if (!$receiverFilter($recipient)) {
                 continue;
             }
             $this->sendSingle($activity, $recipient, $localActor, $exceptions);
