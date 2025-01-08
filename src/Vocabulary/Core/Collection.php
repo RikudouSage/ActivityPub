@@ -5,6 +5,7 @@ namespace Rikudou\ActivityPub\Vocabulary\Core;
 use Rikudou\ActivityPub\Attribute\RequiredProperty;
 use Rikudou\ActivityPub\Enum\ValidatorMode;
 use Rikudou\ActivityPub\Exception\InvalidStateException;
+use Rikudou\ActivityPub\Validator\AllIterableChildrenValidator;
 use Rikudou\ActivityPub\Validator\Condition\NotNull;
 use Rikudou\ActivityPub\Validator\ConditionalValidator;
 use Rikudou\ActivityPub\Validator\IsInstanceOfValidator;
@@ -102,6 +103,10 @@ class Collection extends BaseObject implements ActivityPubCollection
     public ?array $items = null {
         get => $this->items;
         set {
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
+            }
+
             if ($this->__directSet) {
                 $this->items = $value;
             } else {
@@ -120,9 +125,11 @@ class Collection extends BaseObject implements ActivityPubCollection
             ),
             'items' => new ConditionalValidator(
                 new NotNull(),
-                new OrValidator(
-                    new IsInstanceOfValidator(Link::class),
-                    new IsInstanceOfValidator(ActivityPubObject::class),
+                new AllIterableChildrenValidator(
+                    new OrValidator(
+                        new IsInstanceOfValidator(Link::class),
+                        new IsInstanceOfValidator(ActivityPubObject::class),
+                    ),
                 ),
             ),
         ];

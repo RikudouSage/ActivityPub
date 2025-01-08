@@ -15,12 +15,20 @@ class OrderedCollection extends Collection
     }
 
     /**
+     * Identifies the items contained in a collection. The items might be ordered or unordered.
+     *
+     * Note that PHP arrays are always ordered.
+     *
      * @var array<ActivityPubObject|Link>|null
      */
     #[SerializedName('orderedItems')]
     public ?array $items = null {
         get => $this->items;
         set {
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
+            }
+
             if ($this->__directSet) {
                 $this->items = $value;
             } else {
