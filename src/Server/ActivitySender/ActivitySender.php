@@ -10,6 +10,7 @@ interface ActivitySender
 {
     /**
      * @param array<string|Link|ActivityPubActor> $additionalRecipients
+     * @param (callable(string $inboxUrl): bool)|null $receiverFilter
      */
-    public function send(ActivityPubActivity $activity, array $additionalRecipients = []): void;
+    public function send(ActivityPubActivity $activity, array $additionalRecipients = [], ?callable $receiverFilter = null): void;
 }
