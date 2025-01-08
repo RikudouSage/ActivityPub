@@ -53,8 +53,8 @@ final readonly class DefaultActivitySender implements ActivitySender
             ...($activity->bto ?? []),
             ...($activity->bcc ?? []),
         ];
-        $activity->bto = [];
-        $activity->bcc = [];
+        $activity->bto = null;
+        $activity->bcc = null;
 
         $exceptions = [];
         if (is_array($activity->actor)) {

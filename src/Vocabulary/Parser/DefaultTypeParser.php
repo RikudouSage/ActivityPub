@@ -71,15 +71,17 @@ final class DefaultTypeParser implements TypeParser
                 $value = new PublicKey(...$value);
             } else if (is_array($value) && $key === 'source') {
                 $value = new Source(...$value);
-            } else if (!property_exists($instance, $key)) {
+            }
+
+            if (property_exists($instance, $key)) {
+                $instance->$key = $value;
+            } else {
                 if ($allowCustomProperties) {
                     runInNoValidationContext(fn () => $instance->set($key, $value));
                 } else {
                     $instance->set($key, $value);
                 }
             }
-
-            $instance->$key = $value;
         }
         if (!$instance->id) {
             $instance->id = new OmittedID();
