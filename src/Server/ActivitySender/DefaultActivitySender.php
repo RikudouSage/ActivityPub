@@ -75,7 +75,9 @@ final readonly class DefaultActivitySender implements ActivitySender
             $handled[$recipient] = true;
         }
 
-        throw new CompoundException($exceptions, 'Multiple exceptions have been thrown');
+        if (count($exceptions)) {
+            throw new CompoundException($exceptions, 'Multiple exceptions have been thrown');
+        }
     }
 
     private function sendSingle(ActivityPubActivity $activity, Link $recipient, LocalActor $localActor, array &$exceptions): void
@@ -103,7 +105,7 @@ final readonly class DefaultActivitySender implements ActivitySender
      */
     private function getRecipientInboxes(array $recipients): iterable
     {
-        yield from Iterables::filter(Iterables::map(function (string|Link|ActivityPubActor $recipient): ?iterable {
+        $mappedIterables = Iterables::map(function (string|Link|ActivityPubActor $recipient): ?iterable {
             if ($recipient instanceof ActivityPubActor) {
                 if ($recipient->endpoints instanceof Endpoints && $recipient->endpoints->sharedInbox) {
                     return [$recipient->endpoints->sharedInbox];
@@ -140,6 +142,9 @@ final readonly class DefaultActivitySender implements ActivitySender
                     }
                 }
             }
-        }, $recipients));
+        }, $recipients);
+        $zipped = Iterables::zip(...$mappedIterables);
+
+        return Iterables::filter($zipped);
     }
 }
