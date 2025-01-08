@@ -17,7 +17,7 @@ final readonly class PropertyValueIsStringValidator implements Validator
             return ["the value must be an object which has a string {$this->propertyName} property"];
         }
 
-        if (!is_string($value->{$propertyName})) {
+        if (!is_string($value->{$this->propertyName})) {
             return ["the type of the {$this->propertyName} property must be a string"];
         }
 
