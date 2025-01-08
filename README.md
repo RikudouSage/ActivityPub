@@ -8,6 +8,7 @@ Also some widely used unofficial extensions.
 <!-- TOC -->
 * [ActivityPub for PHP](#activitypub-for-php)
   * [Table of contents](#table-of-contents)
+  * [Installation](#installation)
   * [Objects](#objects)
     * [Naming](#naming)
     * [Objects and activities](#objects-and-activities)
@@ -17,7 +18,12 @@ Also some widely used unofficial extensions.
   * [Server](#server)
     * [Request signing](#request-signing)
     * [Request validating](#request-validating)
+    * [Fetching objects](#fetching-objects)
 <!-- TOC -->
+
+## Installation
+
+`composer require rikudou/activity-pub`
 
 ## Objects
 
