@@ -749,7 +749,28 @@ services:
       $requestFactory: '@Psr\Http\Message\RequestFactoryInterface'
       $httpClient: '@Psr\Http\Client\ClientInterface'
       $typeParser: '@Rikudou\ActivityPub\Vocabulary\Parser\TypeParser'
+      
+  Rikudou\ActivityPub\Server\CollectionResolver\CollectionResolver:
+    class: Rikudou\ActivityPub\Server\CollectionResolver\DefaultCollectionResolver
+    arguments:
+      $objectFetcher: '@Rikudou\ActivityPub\Server\ObjectFetcher\ObjectFetcher'
 
   Rikudou\ActivityPub\Server\Signing\RequestSigner: '@Rikudou\ActivityPub\Server\Signing\RequestSignerAndValidator'
   Rikudou\ActivityPub\Server\Signing\RequestValidator: '@Rikudou\ActivityPub\Server\Signing\RequestSignerAndValidator'
+```
+
+If you also want to use the built-in activity sender, you need to create a service implementing `Rikudou\ActivityPub\Server\Abstraction\LocalActorResolver`
+and add the following to the above yaml:
+
+```yaml
+  Rikudou\ActivityPub\Server\ActivitySender\ActivitySender:
+    class: Rikudou\ActivityPub\Server\ActivitySender\DefaultActivitySender
+    arguments:
+      $objectFetcher: '@Rikudou\ActivityPub\Server\ObjectFetcher\ObjectFetcher'
+      $collectionResolver: '@Rikudou\ActivityPub\Server\CollectionResolver\CollectionResolver'
+      $requestFactory: '@Psr\Http\Message\RequestFactoryInterface'
+      $httpClient: '@Psr\Http\Client\ClientInterface'
+      $streamFactory: '@Psr\Http\Message\StreamFactoryInterface'
+      $requestSigner: '@Rikudou\ActivityPub\Server\Signing\RequestSigner'
+      $localActorResolver: '@Rikudou\ActivityPub\Server\Abstraction\LocalActorResolver'
 ```

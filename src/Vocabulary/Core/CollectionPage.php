@@ -36,7 +36,6 @@ class CollectionPage extends Collection
     /**
      * Indicates the next page of items.
      */
-    #[RequiredProperty(ValidatorMode::Recommended)]
     public Link|CollectionPage|null $next = null {
         get => $this->next;
         set (Link|CollectionPage|null|string $value) {
@@ -55,7 +54,6 @@ class CollectionPage extends Collection
     /**
      * Identifies the previous page of items.
      */
-    #[RequiredProperty(ValidatorMode::Recommended)]
     public Link|CollectionPage|null $prev = null {
         get => $this->prev;
         set (Link|CollectionPage|null|string $value) {
