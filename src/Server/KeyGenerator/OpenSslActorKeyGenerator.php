@@ -27,11 +27,13 @@ final readonly class OpenSslActorKeyGenerator implements ActorKeyGenerator
         assert(is_string($publicKeyPem));
 
         $keyPair = new KeyPair($privateKeyPem, $publicKeyPem);
-        $actor->publicKey = new PublicKey(
-            id: $actor->id . '#mainKey',
-            owner: $actor->id,
-            publicKeyPem: $keyPair->publicKey,
-        );
+        if ($actor) {
+            $actor->publicKey = new PublicKey(
+                id: $actor->id . '#mainKey',
+                owner: $actor->id,
+                publicKeyPem: $keyPair->publicKey,
+            );
+        }
 
         return $keyPair;
     }
