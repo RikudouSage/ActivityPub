@@ -13,6 +13,7 @@ use Rikudou\ActivityPub\Attribute\SerializedName;
 use Rikudou\ActivityPub\Dto\NullID;
 use Rikudou\ActivityPub\Dto\OmittedID;
 use Rikudou\ActivityPub\Enum\ValidatorMode;
+use Rikudou\ActivityPub\Exception\InvalidOperationException;
 use Rikudou\ActivityPub\Exception\MissingRequiredPropertyException;
 use Rikudou\ActivityPub\Vocabulary\Core\Link;
 
@@ -35,7 +36,12 @@ trait JsonSerializableObjectTrait
                 continue;
             }
 
-            $value = $property->getValue($this);
+            try {
+                $value = $property->getValue($this);
+            } catch (InvalidOperationException) {
+                continue;
+            }
+
             $required = $this->getAttribute($property, RequiredProperty::class);
             if ($required && $required->validatorMode->value <= $currentMode->value && $value === null) {
                 throw new MissingRequiredPropertyException(sprintf(
