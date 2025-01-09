@@ -2,11 +2,13 @@
 
 namespace Rikudou\ActivityPub\Vocabulary\Core;
 
+use JsonSerializable;
 use Rikudou\ActivityPub\ActivityPubConstants;
 use Rikudou\ActivityPub\Attribute\IgnoreProperty;
 use Rikudou\ActivityPub\Attribute\LangMapProperty;
 use Rikudou\ActivityPub\Attribute\RequiredProperty;
 use Rikudou\ActivityPub\Enum\ValidatorMode;
+use Rikudou\ActivityPub\Trait\JsonSerializableObjectTrait;
 use Rikudou\ActivityPub\Trait\ObjectSetterTrait;
 use Rikudou\ActivityPub\Validator\Condition\NotNull;
 use Rikudou\ActivityPub\Validator\ConditionalValidator;
@@ -23,13 +25,17 @@ use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubObject;
  * When a Link is used, it establishes a qualified relation connecting the subject (the containing object) to the resource identified by the href.
  * Properties of the {@see Link} are properties of the reference as opposed to properties of the resource.
  */
-class Link
+class Link implements JsonSerializable
 {
     use ObjectSetterTrait;
+    use JsonSerializableObjectTrait;
 
     public string $type {
         get => 'Link';
     }
+
+    #[IgnoreProperty]
+    public bool $forceRenderingAsLink = false;
 
     /**
      * The target resource pointed to
@@ -161,7 +167,9 @@ class Link
             && $this->hrefLang === null
             && $this->height === null
             && $this->width === null
-            && $this->preview === null;
+            && $this->preview === null
+            && !$this->forceRenderingAsLink
+        ;
     }
 
     public static function fromString(string $link): Link
