@@ -48,7 +48,7 @@ final readonly class DefaultActivitySender implements ActivitySender
 
         $recipients = [
             ...$additionalRecipients,
-            ...$activity->to,
+            ...($activity->to ?? []),
             ...($activity->cc ?? []),
             ...($activity->bto ?? []),
             ...($activity->bcc ?? []),
