@@ -2,6 +2,7 @@
 
 namespace Rikudou\ActivityPub\Vocabulary\Core;
 
+use Rikudou\ActivityPub\Attribute\ObjectArray;
 use Rikudou\ActivityPub\Attribute\SerializedName;
 use Rikudou\ActivityPub\Validator\Condition\NotNull;
 use Rikudou\ActivityPub\Validator\ConditionalValidator;
@@ -20,6 +21,7 @@ class OrderedCollectionPage extends CollectionPage
     /**
      * @var array<ActivityPubObject|Link>|null
      */
+    #[ObjectArray]
     #[SerializedName('orderedItems')]
     public ?array $items = null {
         get => $this->items;

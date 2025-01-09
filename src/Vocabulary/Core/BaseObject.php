@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Rikudou\ActivityPub\ActivityPubConstants;
 use Rikudou\ActivityPub\Attribute\LangMapProperty;
+use Rikudou\ActivityPub\Attribute\ObjectArray;
 use Rikudou\ActivityPub\Attribute\RequiredProperty;
 use Rikudou\ActivityPub\Attribute\SerializedName;
 use Rikudou\ActivityPub\Dto\NullID;
@@ -100,6 +101,7 @@ class BaseObject implements ActivityPubObject
      *
      * @var ActivityPubObject|Link|array<ActivityPubObject|Link>|null
      */
+    #[ObjectArray]
     public ActivityPubObject|Link|array|null $attachment = null {
         get => $this->attachment;
         set (ActivityPubObject|Link|array|null|string $value) {
@@ -125,6 +127,7 @@ class BaseObject implements ActivityPubObject
      *
      * @var Link|ActivityPubObject|array<Link|ActivityPubObject>|null
      */
+    #[ObjectArray]
     public Link|ActivityPubObject|array|null $attributedTo = null {
         get => $this->attributedTo;
         set (Link|ActivityPubObject|array|null|string $value) {
@@ -149,6 +152,7 @@ class BaseObject implements ActivityPubObject
      *
      * @var Link|ActivityPubObject|array<Link|ActivityPubObject>|null
      */
+    #[ObjectArray]
     public Link|ActivityPubObject|array|null $audience = null {
         get => $this->audience;
         set (Link|ActivityPubObject|array|null|string $value) {
@@ -249,6 +253,7 @@ class BaseObject implements ActivityPubObject
      *
      * @var Image|Link|array<Image|Link>|null
      */
+    #[ObjectArray]
     public Image|Link|array|null $icon = null {
         get => $this->icon;
         set (Image|Link|array|null|string $value) {
@@ -272,6 +277,7 @@ class BaseObject implements ActivityPubObject
      *
      * @var Image|Link|array<Image|Link>|null
      */
+    #[ObjectArray]
     public Image|Link|array|null $image = null {
         get => $this->image;
         set (Image|Link|array|null|string $value) {
@@ -295,6 +301,7 @@ class BaseObject implements ActivityPubObject
      *
      * @var ActivityPubObject|Link|array<ActivityPubObject|Link>|null
      */
+    #[ObjectArray]
     public ActivityPubObject|Link|array|null $inReplyTo = null {
         get => $this->inReplyTo;
         set (ActivityPubObject|Link|array|null|string $value) {
@@ -318,6 +325,7 @@ class BaseObject implements ActivityPubObject
      *
      * @var ActivityPubObject|Link|array<ActivityPubObject|Link>|null
      */
+    #[ObjectArray]
     public ActivityPubObject|Link|array|null $location = null {
         get => $this->location;
         set (ActivityPubObject|Link|array|null|string $value) {
@@ -429,6 +437,7 @@ class BaseObject implements ActivityPubObject
      *
      * @var ActivityPubObject|Link|array<ActivityPubObject|Link>|null
      */
+    #[ObjectArray]
     public ActivityPubObject|Link|array|null $tag = null {
         get => $this->tag;
         set (ActivityPubObject|Link|array|null|string $value) {
@@ -470,6 +479,7 @@ class BaseObject implements ActivityPubObject
      *
      * @var Link|array<Link>|null
      */
+    #[ObjectArray]
     public Link|array|null $url = null {
         get => $this->url;
         set (Link|array|null|string $value) {
@@ -493,6 +503,7 @@ class BaseObject implements ActivityPubObject
      *
      * @var array<ActivityPubObject|Link>|null
      */
+    #[ObjectArray]
     public ?array $to = null {
         get => $this->to;
         set (ActivityPubObject|Link|array|null|string $value) {
@@ -519,6 +530,7 @@ class BaseObject implements ActivityPubObject
      *
      * @var array<ActivityPubObject|Link>|null
      */
+    #[ObjectArray]
     public array|null $bto = null {
         get => $this->bto;
         set (ActivityPubObject|Link|array|null|string $value) {
@@ -545,6 +557,7 @@ class BaseObject implements ActivityPubObject
      *
      * @var array<ActivityPubObject|Link>|null
      */
+    #[ObjectArray]
     public array|null $cc = null {
         get => $this->cc;
         set (ActivityPubObject|Link|array|null|string $value) {
@@ -571,6 +584,7 @@ class BaseObject implements ActivityPubObject
      *
      * @var array<ActivityPubObject|Link>|null
      */
+    #[ObjectArray]
     public array|null $bcc = null {
         get => $this->bcc;
         set (ActivityPubObject|Link|array|null|string $value) {

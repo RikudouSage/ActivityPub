@@ -2,6 +2,7 @@
 
 namespace Rikudou\ActivityPub\Vocabulary\Core;
 
+use Rikudou\ActivityPub\Attribute\ObjectArray;
 use Rikudou\ActivityPub\Attribute\RequiredProperty;
 use Rikudou\ActivityPub\Dto\Endpoints;
 use Rikudou\ActivityPub\Dto\PublicKey;
@@ -124,6 +125,7 @@ class Actor extends BaseObject implements ActivityPubActor
      *
      * @var array<Link>
      */
+    #[ObjectArray]
     public ?array $streams = null {
         get => $this->streams;
         set {

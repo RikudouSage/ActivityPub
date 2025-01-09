@@ -2,6 +2,7 @@
 
 namespace Rikudou\ActivityPub\Vocabulary\Core;
 
+use Rikudou\ActivityPub\Attribute\ObjectArray;
 use Rikudou\ActivityPub\Exception\InvalidOperationException;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubIntransitiveActivity;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubObject;
@@ -20,6 +21,7 @@ class IntransitiveActivity extends Activity implements ActivityPubIntransitiveAc
      * @internal
      * @var ActivityPubObject|Link|array<ActivityPubObject|Link>|null
      */
+    #[ObjectArray]
     public ActivityPubObject|Link|array|null $object = null {
         get {
             throw new InvalidOperationException('Intransitive activities cannot have objects');

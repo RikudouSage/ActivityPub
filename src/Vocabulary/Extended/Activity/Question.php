@@ -3,6 +3,7 @@
 namespace Rikudou\ActivityPub\Vocabulary\Extended\Activity;
 
 use DateTimeInterface;
+use Rikudou\ActivityPub\Attribute\ObjectArray;
 use Rikudou\ActivityPub\Validator\AllIterableChildrenValidator;
 use Rikudou\ActivityPub\Validator\Condition\NotNull;
 use Rikudou\ActivityPub\Validator\ConditionalValidator;
@@ -26,6 +27,7 @@ class Question extends IntransitiveActivity
     /**
      * @var array<Link|ActivityPubObject>|null
      */
+    #[ObjectArray]
     public ?array $oneOf = null {
         get => $this->oneOf;
         set {
@@ -40,6 +42,7 @@ class Question extends IntransitiveActivity
     /**
      * @var array<Link|ActivityPubObject>|null
      */
+    #[ObjectArray]
     public ?array $anyOf = null {
         get => $this->anyOf;
         set {

@@ -2,6 +2,7 @@
 
 namespace Rikudou\ActivityPub\Vocabulary\Core;
 
+use Rikudou\ActivityPub\Attribute\ObjectArray;
 use Rikudou\ActivityPub\Attribute\SerializedName;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubObject;
 
@@ -21,6 +22,7 @@ class OrderedCollection extends Collection
      *
      * @var array<ActivityPubObject|Link>|null
      */
+    #[ObjectArray]
     #[SerializedName('orderedItems')]
     public ?array $items = null {
         get => $this->items;

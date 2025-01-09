@@ -2,6 +2,7 @@
 
 namespace Rikudou\ActivityPub\Vocabulary\Core;
 
+use Rikudou\ActivityPub\Attribute\ObjectArray;
 use Rikudou\ActivityPub\Attribute\RequiredProperty;
 use Rikudou\ActivityPub\Enum\ValidatorMode;
 use Rikudou\ActivityPub\Exception\InvalidStateException;
@@ -100,6 +101,7 @@ class Collection extends BaseObject implements ActivityPubCollection
      *
      * @var array<ActivityPubObject|Link>|null
      */
+    #[ObjectArray]
     public ?array $items = null {
         get => $this->items;
         set {

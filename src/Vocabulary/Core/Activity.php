@@ -2,6 +2,7 @@
 
 namespace Rikudou\ActivityPub\Vocabulary\Core;
 
+use Rikudou\ActivityPub\Attribute\ObjectArray;
 use Rikudou\ActivityPub\Attribute\RequiredProperty;
 use Rikudou\ActivityPub\Enum\ValidatorMode;
 use Rikudou\ActivityPub\Validator\AllIterableChildrenValidator;
@@ -30,6 +31,7 @@ class Activity extends BaseObject implements ActivityPubActivity
      *
      * @var ActivityPubActor|Link|array<ActivityPubActor|Link>|null
      */
+    #[ObjectArray]
     #[RequiredProperty(ValidatorMode::Recommended)]
     public ActivityPubActor|Link|array|null $actor = null {
         get => $this->actor;
@@ -55,6 +57,7 @@ class Activity extends BaseObject implements ActivityPubActivity
      *
      * @var ActivityPubObject|Link|array<ActivityPubObject|Link>|null
      */
+    #[ObjectArray]
     #[RequiredProperty(ValidatorMode::Recommended)]
     public ActivityPubObject|Link|array|null $object = null {
         get => $this->object;
@@ -82,6 +85,7 @@ class Activity extends BaseObject implements ActivityPubActivity
      *
      * @var ActivityPubObject|Link|array<ActivityPubObject|Link>|null
      */
+    #[ObjectArray]
     public ActivityPubObject|Link|array|null $target = null {
         get => $this->target;
         set (ActivityPubObject|Link|array|null|string $value) {
@@ -144,6 +148,7 @@ class Activity extends BaseObject implements ActivityPubActivity
      *
      * @var ActivityPubObject|Link|array<ActivityPubObject|Link>|null
      */
+    #[ObjectArray]
     public ActivityPubObject|Link|array|null $instrument = null {
         get => $this->instrument;
         set (ActivityPubObject|Link|array|null|string $value) {

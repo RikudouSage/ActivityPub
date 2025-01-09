@@ -20,7 +20,7 @@ trait ObjectSetterTrait
     {
         if (!property_exists($this, $propertyName)) {
             if ($this->validatorMode !== ValidatorMode::None) {
-                throw new InvalidValueException("Cannot set a custom property when validation is enabled. Either disable validation for this object, or use the runInNoValidationContext() function");
+                throw new InvalidValueException("Cannot set a custom property '{$propertyName}' when validation is enabled. Either disable validation for this object, or use the runInNoValidationContext() function");
             }
             $this->customProperties[$propertyName] = $value;
         } else {
