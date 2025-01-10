@@ -23,7 +23,8 @@
         "psr/http-client": "^1.0",
         "ext-openssl": "*",
         "psr/http-factory": "^1.1",
-        "rikudou/iterables": "^1.3"
+        "rikudou/iterables": "^1.3",
+        "rikudou/array-merge-recursive": "^1.0"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "^7.9"

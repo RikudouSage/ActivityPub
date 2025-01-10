@@ -16,6 +16,7 @@ use Rikudou\ActivityPub\Enum\ValidatorMode;
 use Rikudou\ActivityPub\Exception\InvalidOperationException;
 use Rikudou\ActivityPub\Exception\MissingRequiredPropertyException;
 use Rikudou\ActivityPub\Vocabulary\Core\Link;
+use function Rikudou\ArrayMergeRecursive\array_merge_recursive;
 
 trait JsonSerializableObjectTrait
 {
@@ -29,6 +30,8 @@ trait JsonSerializableObjectTrait
         }
 
         $reflection = new ReflectionObject($this);
+
+        $context = [];
 
         $result = [];
         foreach ($reflection->getProperties(ReflectionProperty::IS_PUBLIC ^ ReflectionProperty::IS_STATIC) as $property) {
@@ -58,7 +61,7 @@ trait JsonSerializableObjectTrait
                 $this->handleLangMapProperty($targetName, $value, $langMapProperty->suffix);
             }
 
-            $value = $this->convertToSerializableValue($value);
+            $value = $this->convertToSerializableValue($value, $context);
 
             if ($value === null) {
                 continue;
@@ -72,8 +75,14 @@ trait JsonSerializableObjectTrait
 
         if (property_exists($this, 'customProperties') && is_array($this->customProperties)) {
             foreach ($this->customProperties as $property => $value) {
-                $result[$property] = $this->convertToSerializableValue($value);
+                $result[$property] = $this->convertToSerializableValue($value, $context);
             }
+        }
+
+        if (isset($result['@context'])) {
+            $context = array_merge_recursive($context, is_array($result['@context']) ? $result['@context'] : [$result['@context']]);
+            $context = $this->uniqueArray($context);
+            $result['@context'] = $context;
         }
 
         return $result;
@@ -103,13 +112,19 @@ trait JsonSerializableObjectTrait
         return $attributes[array_key_first($attributes)]->newInstance();
     }
 
-    private function convertToSerializableValue(mixed $value): mixed
+    private function convertToSerializableValue(mixed $value, array &$context): mixed
     {
         if ($value instanceof Link && $value->simple) {
             return (string) $value;
         }
         if ($value instanceof JsonSerializable) {
-            return $value->jsonSerialize();
+            $result = $value->jsonSerialize();
+            if (isset($result['@context'])) {
+                $context = array_merge_recursive($context, is_array($result['@context']) ? $result['@context'] : [$result['@context']]);
+                unset($result['@context']);
+            }
+
+            return $result;
         }
         if ($value instanceof OmittedID) {
             return null;
@@ -119,11 +134,28 @@ trait JsonSerializableObjectTrait
         }
 
         if (is_array($value)) {
-            return array_map(function ($item) {
-                return $this->convertToSerializableValue($item);
+            return array_map(function ($item) use (&$context) {
+                return $this->convertToSerializableValue($item, $context);
             }, $value);
         }
 
         return $value;
+    }
+
+    private function uniqueArray(array $array): array
+    {
+        $alreadyFound = [];
+        $result = [];
+
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $result[$key] = $this->uniqueArray($value);
+            } elseif (!in_array($value, $alreadyFound, true)) {
+                $result[$key] = $value;
+                $alreadyFound[] = $value;
+            }
+        }
+
+        return $result;
     }
 }
