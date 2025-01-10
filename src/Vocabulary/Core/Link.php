@@ -188,7 +188,7 @@ class Link implements JsonSerializable
         return $instance;
     }
 
-    protected function getValidators(): array
+    protected function getValidators(): iterable
     {
         return [
             'href' => new ConditionalValidator(

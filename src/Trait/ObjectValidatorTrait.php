@@ -6,6 +6,7 @@ use JsonSerializable;
 use Rikudou\ActivityPub\Attribute\IgnoreProperty;
 use Rikudou\ActivityPub\Enum\ValidatorMode;
 use Rikudou\ActivityPub\Exception\InvalidPropertyValueException;
+use Rikudou\ActivityPub\Exception\InvalidStateException;
 use Rikudou\ActivityPub\GlobalSettings;
 use Stringable;
 
