@@ -29,6 +29,7 @@ use Rikudou\ActivityPub\Validator\ConditionalValidator;
 use Rikudou\ActivityPub\Validator\GlobMatchValidator;
 use Rikudou\ActivityPub\Validator\IsArrayValidator;
 use Rikudou\ActivityPub\Validator\IsInstanceOfValidator;
+use Rikudou\ActivityPub\Validator\IsNullValidator;
 use Rikudou\ActivityPub\Validator\IsStringValidator;
 use Rikudou\ActivityPub\Validator\OrValidator;
 use Rikudou\ActivityPub\Validator\UriValidator;
@@ -810,8 +811,11 @@ class BaseObject implements ActivityPubObject
                         new IsInstanceOfValidator(ActivityPubObject::class),
                     ),
                     // todo validate this for array children as well
-                    new IsInstanceOfValidator(Place::class),
-                )
+                    new OrValidator(
+                        new IsNullValidator(),
+                        new IsInstanceOfValidator(Place::class),
+                    ),
+                ),
             ),
             'replies' => new ConditionalValidator(
                 new IsIterable(),
