@@ -27,6 +27,7 @@ use Rikudou\ActivityPub\Validator\Condition\IsValidatorMode;
 use Rikudou\ActivityPub\Validator\Condition\NotNull;
 use Rikudou\ActivityPub\Validator\ConditionalValidator;
 use Rikudou\ActivityPub\Validator\GlobMatchValidator;
+use Rikudou\ActivityPub\Validator\IsArrayValidator;
 use Rikudou\ActivityPub\Validator\IsInstanceOfValidator;
 use Rikudou\ActivityPub\Validator\IsStringValidator;
 use Rikudou\ActivityPub\Validator\OrValidator;
@@ -709,7 +710,17 @@ class BaseObject implements ActivityPubObject
                 ),
                 new ConditionalValidator(
                     new IsArray(),
-                    new AllIterableChildrenValidator(new UriValidator()),
+                    new AllIterableChildrenValidator(
+                        new OrValidator(
+                            new UriValidator(),
+                            new CompoundValidator(
+                                new IsArrayValidator(),
+                                new AllIterableChildrenValidator(
+                                    new UriValidator(),
+                                ),
+                            ),
+                        ),
+                    ),
                 ),
             ),
             'attachment' => new ConditionalValidator(
