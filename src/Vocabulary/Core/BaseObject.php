@@ -889,14 +889,14 @@ class BaseObject implements ActivityPubObject
     }
 
     /**
-     * @template T of ActivityPubActor|ActivityPubObject|Link
+     * @template T of ActivityPubObject|Link
      *
      * @param array<T|string> $array
      * @return array<T>
      */
     protected function convertStringArrayToLinkArray(array $array): array
     {
-        return array_map(function (ActivityPubActor|ActivityPubObject|Link|string $item): ActivityPubActor|Link {
+        return array_map(function (ActivityPubObject|Link|string $item): ActivityPubObject|Link {
             if (is_string($item)) {
                 $item = Link::fromString($item);
             }
