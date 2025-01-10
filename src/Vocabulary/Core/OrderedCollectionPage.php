@@ -26,6 +26,10 @@ class OrderedCollectionPage extends CollectionPage
     public ?array $items = null {
         get => $this->items;
         set {
+            if (is_array($value)) {
+                $value = $this->convertStringArrayToLinkArray($value);
+            }
+
             if ($this->__directSet) {
                 $this->items = $value;
             } else {
