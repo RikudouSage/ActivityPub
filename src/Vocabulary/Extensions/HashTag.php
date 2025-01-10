@@ -8,7 +8,6 @@ use Rikudou\ActivityPub\Attribute\RequiredProperty;
 use Rikudou\ActivityPub\Attribute\SerializedName;
 use Rikudou\ActivityPub\Enum\ValidatorMode;
 use Rikudou\ActivityPub\Exception\InvalidStateException;
-use Rikudou\ActivityPub\Validator\CompoundValidator;
 use Rikudou\ActivityPub\Validator\StringStartsWithValidator;
 use Rikudou\ActivityPub\Vocabulary\Core\Link;
 
@@ -29,7 +28,7 @@ class HashTag extends Link
      * The context should always contain {@see ActivityPubConstants::DEFAULT_NAMESPACE} and may include additional
      * contexts.
      *
-     * @var array<string>|string
+     * @var array<string|array<string, string>>|string
      */
     #[SerializedName('@context')]
     #[RequiredProperty(ValidatorMode::Lax)]

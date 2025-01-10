@@ -57,7 +57,7 @@ class BaseObject implements ActivityPubObject
      * The context should always contain {@see ActivityPubConstants::DEFAULT_NAMESPACE} and may include additional
      * contexts.
      *
-     * @var array<string>|string
+     * @var array<string|array<string, string>>|string
      */
     #[SerializedName('@context')]
     #[RequiredProperty(ValidatorMode::Lax)]

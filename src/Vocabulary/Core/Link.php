@@ -7,6 +7,7 @@ use Rikudou\ActivityPub\ActivityPubConstants;
 use Rikudou\ActivityPub\Attribute\IgnoreProperty;
 use Rikudou\ActivityPub\Attribute\LangMapProperty;
 use Rikudou\ActivityPub\Attribute\RequiredProperty;
+use Rikudou\ActivityPub\Attribute\SerializedName;
 use Rikudou\ActivityPub\Enum\ValidatorMode;
 use Rikudou\ActivityPub\Trait\JsonSerializableObjectTrait;
 use Rikudou\ActivityPub\Trait\ObjectSetterTrait;
@@ -32,6 +33,27 @@ class Link implements JsonSerializable
 
     public string $type {
         get => 'Link';
+    }
+
+    /**
+     * Identifies the context within which the object exists or an activity was performed.
+     *
+     * The context should always contain {@see ActivityPubConstants::DEFAULT_NAMESPACE} and may include additional
+     * contexts.
+     *
+     * @var array<string|array<string, string>>|string
+     */
+    #[SerializedName('@context')]
+    #[RequiredProperty(ValidatorMode::Lax)]
+    public string|array $context = ActivityPubConstants::DEFAULT_NAMESPACE {
+        get => $this->context;
+        set {
+            if ($this->__directSet) {
+                $this->context = $value;
+            } else {
+                $this->set('context', $value);
+            }
+        }
     }
 
     #[IgnoreProperty]

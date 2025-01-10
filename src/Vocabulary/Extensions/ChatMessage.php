@@ -2,6 +2,10 @@
 
 namespace Rikudou\ActivityPub\Vocabulary\Extensions;
 
+use Rikudou\ActivityPub\ActivityPubConstants;
+use Rikudou\ActivityPub\Attribute\RequiredProperty;
+use Rikudou\ActivityPub\Attribute\SerializedName;
+use Rikudou\ActivityPub\Enum\ValidatorMode;
 use Rikudou\ActivityPub\Exception\InvalidOperationException;
 use Rikudou\ActivityPub\Validator\CountValidator;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubObject;
@@ -17,6 +21,32 @@ class ChatMessage extends BaseObject
 {
     public string $type {
         get => 'ChatMessage';
+    }
+
+    /**
+     * Identifies the context within which the object exists or an activity was performed.
+     *
+     * The context should always contain {@see ActivityPubConstants::DEFAULT_NAMESPACE} and may include additional
+     * contexts.
+     *
+     * @var array<string|array<string, string>>|string
+     */
+    #[SerializedName('@context')]
+    #[RequiredProperty(ValidatorMode::Lax)]
+    public string|array $context = [
+        ActivityPubConstants::DEFAULT_NAMESPACE,
+        [
+            'ChatMessage' => 'http://litepub.social/ns#ChatMessage',
+        ],
+    ] {
+        get => $this->context;
+        set {
+            if ($this->__directSet) {
+                $this->context = $value;
+            } else {
+                $this->set('context', $value);
+            }
+        }
     }
 
     /**
