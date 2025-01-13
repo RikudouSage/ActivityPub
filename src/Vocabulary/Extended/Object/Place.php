@@ -23,7 +23,7 @@ class Place extends BaseObject
      * Indicates the accuracy of position coordinates.
      * Expressed in properties of percentage. e.g. "94.0" means "94.0% accurate".
      */
-    public ?float $accuracy {
+    public ?float $accuracy = null {
         get => $this->accuracy;
         set {
             if ($this->__directSet) {
@@ -39,7 +39,7 @@ class Place extends BaseObject
      * The measurement units is indicated using the {@see Place::units} property.
      * If {@see Place::units} is not specified, the default is assumed to be {@see PlaceUnit::Meters}.
      */
-    public ?float $altitude {
+    public ?float $altitude = null {
         get => $this->altitude;
         set {
             if ($this->__directSet) {
@@ -53,7 +53,7 @@ class Place extends BaseObject
     /**
      * The latitude of a place
      */
-    public ?float $latitude {
+    public ?float $latitude = null {
         get => $this->latitude;
         set {
             if ($this->__directSet) {
@@ -67,7 +67,7 @@ class Place extends BaseObject
     /**
      * The longitude of a place
      */
-    public ?float $longitude {
+    public ?float $longitude = null {
         get => $this->longitude;
         set {
             if ($this->__directSet) {
@@ -83,7 +83,7 @@ class Place extends BaseObject
      * The unit is expressed by the {@see Place::units} property.
      * If {@see Place::units} is not specified, the default is assumed to be {@see PlaceUnit::Meters}.
      */
-    public ?float $radius {
+    public ?float $radius = null {
         get => $this->radius;
         set {
             if ($this->__directSet) {

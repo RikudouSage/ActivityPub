@@ -11,6 +11,11 @@
             "src/functions.php"
         ]
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Rikudou\\Tests\\ActivityPub\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Dominik Chrastecky",
@@ -27,6 +32,7 @@
         "rikudou/array-merge-recursive": "^1.0"
     },
     "require-dev": {
-        "guzzlehttp/guzzle": "^7.9"
+        "guzzlehttp/guzzle": "^7.9",
+        "phpunit/phpunit": "^11.5"
     }
 }
