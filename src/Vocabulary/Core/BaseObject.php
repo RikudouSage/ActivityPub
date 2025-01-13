@@ -717,7 +717,15 @@ class BaseObject implements ActivityPubObject
                             new CompoundValidator(
                                 new IsArrayValidator(),
                                 new AllIterableChildrenValidator(
-                                    new UriValidator(),
+                                    new OrValidator(
+                                        new UriValidator(),
+                                        new CompoundValidator(
+                                            new IsArrayValidator(),
+                                            new AllIterableChildrenValidator(
+                                                new UriValidator(),
+                                            ),
+                                        ),
+                                    ),
                                 ),
                             ),
                         ),

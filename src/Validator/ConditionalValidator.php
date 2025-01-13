@@ -13,13 +13,13 @@ final readonly class ConditionalValidator implements Validator
     private Closure $condition;
 
     /**
-     * @var Closure(mixed $value, ValidatorMode $mode): bool
+     * @var Closure(mixed $value, ValidatorMode $mode): array<string>
      */
     private Closure $validator;
 
     /**
      * @param callable(mixed $value, ValidatorMode $mode): bool $condition
-     * @param callable(mixed $value, ValidatorMode $mode): bool $validator
+     * @param callable(mixed $value, ValidatorMode $mode): array<string> $validator
      */
     public function __construct(
         callable $condition,
