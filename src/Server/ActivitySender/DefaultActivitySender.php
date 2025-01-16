@@ -31,7 +31,7 @@ final readonly class DefaultActivitySender implements ActivitySender
         private ClientInterface $httpClient,
         private StreamFactoryInterface $streamFactory,
         private RequestSigner $requestSigner,
-        private LocalActorResolver $localActorResolver,
+        private ?LocalActorResolver $localActorResolver = null,
     ) {
     }
 
@@ -43,6 +43,7 @@ final readonly class DefaultActivitySender implements ActivitySender
         ActivityPubActivity $activity,
         array $additionalRecipients = [],
         ?callable $receiverFilter = null,
+        ?LocalActor $localActor = null,
     ): void {
         $receiverFilter ??= fn (string $inboxUrl): true => true;
 
@@ -64,11 +65,14 @@ final readonly class DefaultActivitySender implements ActivitySender
             throw new InvalidValueException("Every action must have an actor.");
         }
 
-        $localActor = $this->localActorResolver->findLocalActorById(
+        $localActor ??= $this->localActorResolver?->findLocalActorById(
             $activity->actor instanceof ActivityPubActor
                 ? $activity->actor->id
                 : $activity->actor
         );
+        if ($localActor === null) {
+            throw new InvalidOperationException("You must either provide the local actor manually, or provide a service implementing LocalActorResolver.");
+        }
 
         $handled = [];
         $recipients = $this->getRecipientInboxes($recipients);
