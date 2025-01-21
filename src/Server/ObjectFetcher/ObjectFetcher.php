@@ -7,5 +7,5 @@ use Rikudou\ActivityPub\Vocabulary\Core\Link;
 
 interface ObjectFetcher
 {
-    public function fetch(Link|string $url): ActivityPubObject;
+    public function fetch(Link|string $url, bool $allowCustomProperties = false): ActivityPubObject;
 }

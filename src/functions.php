@@ -9,9 +9,14 @@ use Rikudou\ActivityPub\Enum\ValidatorMode;
  */
 function runInNoValidationContext(callable $callable): void
 {
+    runInCustomValidationContext(ValidatorMode::None, $callable);
+}
+
+function runInCustomValidationContext(ValidatorMode $mode, callable $callable): void
+{
     $originalMode = GlobalSettings::$validatorMode;
     try {
-        GlobalSettings::$validatorMode = ValidatorMode::None;
+        GlobalSettings::$validatorMode = $mode;
         $callable();
     } finally {
         GlobalSettings::$validatorMode = $originalMode;
