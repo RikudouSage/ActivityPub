@@ -8,7 +8,6 @@ use Rikudou\ActivityPub\Attribute\RequiredProperty;
 use Rikudou\ActivityPub\Dto\NullID;
 use Rikudou\ActivityPub\Dto\OmittedID;
 use Rikudou\ActivityPub\Enum\ValidatorMode;
-use Rikudou\ActivityPub\Exception\InvalidPropertyValueException;
 use Rikudou\ActivityPub\Vocabulary\Core\BaseObject;
 use Rikudou\ActivityPub\Vocabulary\Core\Link;
 
@@ -19,8 +18,8 @@ final class RsaSignature2017 extends BaseObject
     }
 
     public string|null|NullID|OmittedID $id = null {
-        get => throw new InvalidPropertyValueException("RsaSignature2017 does not have an ID");
-        set => throw new InvalidPropertyValueException("RsaSignature2017 does not have an ID");
+        get => new OmittedID();
+        set {}
     }
 
     #[RequiredProperty(ValidatorMode::Lax)]
