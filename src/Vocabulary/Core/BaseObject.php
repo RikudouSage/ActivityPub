@@ -704,33 +704,9 @@ class BaseObject implements ActivityPubObject
                 new IsInstanceOfValidator(OmittedID::class),
                 new IsInstanceOfValidator(NullID::class),
             ),
-            'context' => new CompoundValidator(
-                new ConditionalValidator(
-                    new IsString(),
-                    new UriValidator(),
-                ),
-                new ConditionalValidator(
-                    new IsArray(),
-                    new AllIterableChildrenValidator(
-                        new OrValidator(
-                            new UriValidator(),
-                            new CompoundValidator(
-                                new IsArrayValidator(),
-                                new AllIterableChildrenValidator(
-                                    new OrValidator(
-                                        new UriValidator(),
-                                        new CompoundValidator(
-                                            new IsArrayValidator(),
-                                            new AllIterableChildrenValidator(
-                                                new UriValidator(),
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
+            'context' => new OrValidator(
+                new IsStringValidator(),
+                new IsArrayValidator(),
             ),
             'attachment' => new ConditionalValidator(
                 new IsArray(),
