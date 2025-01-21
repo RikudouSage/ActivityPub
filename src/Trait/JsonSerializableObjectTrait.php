@@ -81,8 +81,23 @@ trait JsonSerializableObjectTrait
 
         if (isset($result['@context'])) {
             $context = array_merge_recursive($context, is_array($result['@context']) ? $result['@context'] : [$result['@context']]);
-            $context = $this->uniqueArray($context);
-            $result['@context'] = $context;
+            $resultingContext = [];
+            $associativeContext = [];
+
+            foreach ($context as $item) {
+                if (is_array($item) && array_is_list($item)) {
+                    $resultingContext = array_merge_recursive($resultingContext, $item);
+                } else if (is_array($item)) {
+                    $associativeContext = array_merge_recursive($associativeContext, $item);
+                } else if (!in_array($item, $resultingContext, true)) {
+                    $resultingContext[] = $item;
+                }
+            }
+            if ($associativeContext) {
+                $resultingContext[] = $associativeContext;
+            }
+
+            $result['@context'] = $resultingContext;
         }
 
         return $result;
@@ -140,22 +155,5 @@ trait JsonSerializableObjectTrait
         }
 
         return $value;
-    }
-
-    private function uniqueArray(array $array): array
-    {
-        $alreadyFound = [];
-        $result = [];
-
-        foreach ($array as $key => $value) {
-            if (is_array($value)) {
-                $result[$key] = $this->uniqueArray($value);
-            } elseif (!in_array($value, $alreadyFound, true)) {
-                $result[$key] = $value;
-                $alreadyFound[] = $value;
-            }
-        }
-
-        return $result;
     }
 }
