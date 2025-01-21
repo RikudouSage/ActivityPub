@@ -74,7 +74,7 @@ interface ActivityPubActivity extends ActivityPubObject
         set (ActivityPubObject|Link|array|null|string $value);
     }
 
-    public ?RsaSignature2017 $signature = null {
+    public ?RsaSignature2017 $signature {
         get;
         set;
     }
