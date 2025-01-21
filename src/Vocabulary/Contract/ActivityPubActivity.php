@@ -5,6 +5,7 @@ namespace Rikudou\ActivityPub\Vocabulary\Contract;
 use Rikudou\ActivityPub\Attribute\RequiredProperty;
 use Rikudou\ActivityPub\Enum\ValidatorMode;
 use Rikudou\ActivityPub\Vocabulary\Core\Link;
+use Rikudou\ActivityPub\Vocabulary\Extensions\RsaSignature2017;
 
 interface ActivityPubActivity extends ActivityPubObject
 {
@@ -71,5 +72,10 @@ interface ActivityPubActivity extends ActivityPubObject
     public ActivityPubObject|Link|array|null $instrument {
         get;
         set (ActivityPubObject|Link|array|null|string $value);
+    }
+
+    public ?RsaSignature2017 $signature = null {
+        get;
+        set;
     }
 }

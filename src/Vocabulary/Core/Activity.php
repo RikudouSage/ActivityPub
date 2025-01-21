@@ -13,6 +13,7 @@ use Rikudou\ActivityPub\Validator\OrValidator;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActivity;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActor;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubObject;
+use Rikudou\ActivityPub\Vocabulary\Extensions\RsaSignature2017;
 
 /**
  * An Activity is a subtype of {@see BaseObject} that describes some form of action that may happen, is currently happening, or has already happened.
@@ -163,6 +164,17 @@ class Activity extends BaseObject implements ActivityPubActivity
                 $this->instrument = $value;
             } else {
                 $this->set('instrument', $value);
+            }
+        }
+    }
+
+    public ?RsaSignature2017 $signature = null {
+        get => $this->signature;
+        set {
+            if ($this->__directSet) {
+                $this->signature = $value;
+            } else {
+                $this->set('signature', $value);
             }
         }
     }
