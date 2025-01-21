@@ -662,9 +662,9 @@ class BaseObject implements ActivityPubObject
      * The likes collection must be either an {@see OrderedCollection} or a {@see Collection} and may be filtered on privileges
      * of an authenticated user or as appropriate when no authentication is given.
      */
-    public ?Link $likes = null {
+    public Link|ActivityPubCollection|null $likes = null {
         get => $this->likes;
-        set (Link|null|string $value) {
+        set (Link|null|string|ActivityPubCollection $value) {
             if (is_string($value)) {
                 $value = Link::fromString($value);
             }
@@ -682,9 +682,9 @@ class BaseObject implements ActivityPubObject
      * The shares collection must be either an {@see OrderedCollection} or a {@see Collection} and may be filtered on privileges
      * of an authenticated user or as appropriate when no authentication is given.
      */
-    public ?Link $shares = null {
+    public Link|ActivityPubCollection|null $shares = null {
         get => $this->shares;
-        set (Link|null|string $value) {
+        set (Link|null|string|ActivityPubCollection $value) {
             if (is_string($value)) {
                 $value = Link::fromString($value);
             }
@@ -798,15 +798,6 @@ class BaseObject implements ActivityPubObject
                     new OrValidator(
                         new IsNullValidator(),
                         new IsInstanceOfValidator(Place::class),
-                    ),
-                ),
-            ),
-            'replies' => new ConditionalValidator(
-                new IsIterable(),
-                new AllIterableChildrenValidator(
-                    new OrValidator(
-                        new IsInstanceOfValidator(ActivityPubObject::class),
-                        new IsInstanceOfValidator(Link::class),
                     ),
                 ),
             ),

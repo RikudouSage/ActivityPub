@@ -8,6 +8,7 @@ use JsonSerializable;
 use Rikudou\ActivityPub\Attribute\LangMapProperty;
 use Rikudou\ActivityPub\Dto\NullID;
 use Rikudou\ActivityPub\Dto\OmittedID;
+use Rikudou\ActivityPub\Dto\Source\Source;
 use Rikudou\ActivityPub\Vocabulary\Core\Link;
 use Rikudou\ActivityPub\Vocabulary\Extended\Object\Image;
 
@@ -297,6 +298,36 @@ interface ActivityPubObject extends JsonSerializable
     public ?DateInterval $duration {
         get;
         set (DateInterval|null|string $value);
+    }
+
+    /**
+     * The source property is intended to convey some sort of source from which the {@see BaseObject::content} markup was derived,
+     * as a form of provenance, or to support future editing by clients. In general, clients do the conversion from source to {@see BaseObject::content},
+     * not the other way around.
+     */
+    public ?Source $source {
+        get;
+        set;
+    }
+
+    /**
+     * This is a list of all {@see Like} activities with this object as the {@see BaseObject::object} property.
+     * The likes collection must be either an {@see OrderedCollection} or a {@see Collection} and may be filtered on privileges
+     * of an authenticated user or as appropriate when no authentication is given.
+     */
+    public Link|ActivityPubCollection|null $likes {
+        get;
+        set (Link|null|string|ActivityPubCollection $value);
+    }
+
+    /**
+     * This is a list of all {@see Announce} activities with this object as the {@see BaseObject::object} property.
+     * The shares collection must be either an {@see OrderedCollection} or a {@see Collection} and may be filtered on privileges
+     * of an authenticated user or as appropriate when no authentication is given.
+     */
+    public Link|ActivityPubCollection|null $shares {
+        get;
+        set (Link|null|string|ActivityPubCollection $value);
     }
 
     public function set(string $propertyName, mixed $value): void;
