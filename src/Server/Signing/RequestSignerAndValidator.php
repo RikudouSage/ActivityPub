@@ -22,7 +22,7 @@ use SensitiveParameter;
 
 final readonly class RequestSignerAndValidator implements RequestSigner, RequestValidator
 {
-    private const string SUPPORTED_ALGORITHM = 'hs2019';
+    private const array SUPPORTED_ALGORITHMS = ['hs2019', 'rsa-sha256'];
 
     public function __construct(
         private ClientInterface $httpClient,
@@ -52,7 +52,7 @@ final readonly class RequestSignerAndValidator implements RequestSigner, Request
         $signatureHeader = sprintf(
             'keyId="%s",algorithm="%s",headers="%s",signature="%s"',
             $keyId,
-            self::SUPPORTED_ALGORITHM,
+            self::SUPPORTED_ALGORITHMS[0],
             implode(' ', array_keys($headers)),
             base64_encode($signature),
         );
@@ -77,7 +77,7 @@ final readonly class RequestSignerAndValidator implements RequestSigner, Request
 
         $keyId = $parsed['keyId'] ?? null;
         $algorithm = strtolower($parsed['algorithm'] ?? '');
-        if ($algorithm !== self::SUPPORTED_ALGORITHM) {
+        if (!in_array($algorithm, self::SUPPORTED_ALGORITHMS, true)) {
             throw new InvalidOperationException('Cannot verify an unsupported algorithm: ' . $algorithm);
         }
 
