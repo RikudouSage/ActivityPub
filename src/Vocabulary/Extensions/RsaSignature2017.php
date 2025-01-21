@@ -27,6 +27,10 @@ final class RsaSignature2017 extends BaseObject
     public ?Link $creator = null {
         get => $this->creator;
         set (Link|null|string $value) {
+            if (is_string($value)) {
+                $value = Link::fromString($value);
+            }
+
             if ($this->__directSet) {
                 $this->creator = $value;
             } else {
