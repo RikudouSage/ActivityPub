@@ -16,6 +16,7 @@ use Rikudou\ActivityPub\Exception\InvalidValueException;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActor;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubObject;
 use Rikudou\ActivityPub\Vocabulary\Core\Link;
+use Rikudou\ActivityPub\Vocabulary\Extensions\CustomObject;
 use SplFileInfo;
 use function Rikudou\ActivityPub\runInNoValidationContext;
 
@@ -48,11 +49,11 @@ final class DefaultTypeParser implements TypeParser
 
         $className = $this->typeMap[$type] ?? null;
         if ($className === null) {
-            throw new InvalidValueException("Invalid activity object received, the type {$type} is not registered");
+            $instance = new CustomObject($type);
         }
 
         try {
-            $instance = new $className();
+            $instance ??= new $className();
         } catch (Error $e) {
             throw new InvalidValueException('Failed instantiating activity object: ' . $e->getMessage(), previous: $e);
         }
@@ -152,7 +153,11 @@ final class DefaultTypeParser implements TypeParser
                 continue;
             }
 
-            $instance = new ReflectionClass($className)->newInstanceWithoutConstructor();
+            try {
+                $instance = new $className();
+            } catch (Error) {
+                continue;
+            }
             assert($instance instanceof ActivityPubObject || $instance instanceof Link);
 
             $result[$instance->type] = $className;
