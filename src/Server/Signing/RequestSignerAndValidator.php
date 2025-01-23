@@ -13,12 +13,10 @@ use Rikudou\ActivityPub\Exception\CryptographyException;
 use Rikudou\ActivityPub\Exception\InvalidOperationException;
 use Rikudou\ActivityPub\Exception\InvalidStateException;
 use Rikudou\ActivityPub\Exception\InvalidValueException;
-use Rikudou\ActivityPub\Server\Signing\RequestValidator;
-use Rikudou\ActivityPub\Server\Signing\RequestSigner;
+use Rikudou\ActivityPub\Server\Abstraction\LocalActor;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActor;
 use Rikudou\ActivityPub\Vocabulary\Parser\DefaultTypeParser;
 use Rikudou\ActivityPub\Vocabulary\Parser\TypeParser;
-use SensitiveParameter;
 
 final readonly class RequestSignerAndValidator implements RequestSigner, RequestValidator
 {
@@ -31,7 +29,7 @@ final readonly class RequestSignerAndValidator implements RequestSigner, Request
     ) {
     }
 
-    public function signRequest(RequestInterface $request, string $keyId, #[SensitiveParameter] string $privateKeyPem): RequestInterface
+    public function signRequest(RequestInterface $request, LocalActor $actor): RequestInterface
     {
         $headers = $this->createHeaders($request);
         $signingParts = [];
@@ -43,7 +41,9 @@ final readonly class RequestSignerAndValidator implements RequestSigner, Request
         }
         $stringToSign = implode("\n", $signingParts);
 
-        $privateKey = openssl_pkey_get_private($privateKeyPem) ?: throw new CryptographyException('Private key is not valid');
+        $privateKey = openssl_pkey_get_private(
+            $actor->getPrivateKey() ?? throw new InvalidValueException("The private key must be initialized"),
+        ) ?: throw new CryptographyException('Private key is not valid');
         $success = openssl_sign($stringToSign, $signature, $privateKey, OPENSSL_ALGO_SHA256);
         if (!$success) {
             throw new CryptographyException('Failed to create signature');
@@ -51,7 +51,7 @@ final readonly class RequestSignerAndValidator implements RequestSigner, Request
 
         $signatureHeader = sprintf(
             'keyId="%s",algorithm="%s",headers="%s",signature="%s"',
-            $keyId,
+            $actor->getKeyId() ?? throw new InvalidValueException("The key ID must be initialized"),
             self::SUPPORTED_ALGORITHMS[0],
             implode(' ', array_keys($headers)),
             base64_encode($signature),
@@ -62,7 +62,7 @@ final readonly class RequestSignerAndValidator implements RequestSigner, Request
         return $request;
     }
 
-    public function isRequestValid(ServerRequestInterface $request): bool
+    public function isRequestValid(ServerRequestInterface $request, ?LocalActor $localActor = null): bool
     {
         $signatureHeader = $request->getHeader('Signature');
         if (!$signatureHeader) {
@@ -94,7 +94,7 @@ final readonly class RequestSignerAndValidator implements RequestSigner, Request
         }
 
         $opensslAlgorithm = OPENSSL_ALGO_SHA256;
-        $publicKey = $this->fetchPublicKey($keyId);
+        $publicKey = $this->fetchPublicKey($keyId, $localActor);
 
         return openssl_verify(
             $signingString,
@@ -119,13 +119,18 @@ final readonly class RequestSignerAndValidator implements RequestSigner, Request
             throw new InvalidStateException('The request must already have the final body assigned');
         }
 
-        return [
+        $headers = [
             '(request-target)' => "post {$inboxPath}",
             'content-type' => 'application/activity+json',
             'date' => new DateTimeImmutable()->setTimezone(new DateTimeZone('UTC'))->format(DateTimeImmutable::RFC7231),
-            'digest' => 'SHA-256=' . base64_encode(hash('sha256', $body, true)),
             'host' => $request->getUri()->getHost(),
         ];
+
+        if ($request->getMethod() === 'POST') {
+            $headers['digest'] = 'SHA-256=' . base64_encode(hash('sha256', $body, true));
+        }
+
+        return $headers;
     }
 
     /**
@@ -178,12 +183,16 @@ final readonly class RequestSignerAndValidator implements RequestSigner, Request
         return  implode("\n", $signingParts);
     }
 
-    private function fetchPublicKey(string $keyId): string
+    private function fetchPublicKey(string $keyId, ?LocalActor $actor): string
     {
         $request = $this->requestFactory
             ->createRequest('GET', $keyId)
             ->withHeader('Accept', 'application/activity+json')
         ;
+        if ($actor) {
+            $request = $this->signRequest($request, $actor);
+        }
+
         try {
             $response = $this->httpClient->sendRequest($request);
         } catch (ClientExceptionInterface $e) {

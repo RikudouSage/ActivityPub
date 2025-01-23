@@ -100,8 +100,7 @@ final readonly class DefaultActivitySender implements ActivitySender
         ;
         $request = $this->requestSigner->signRequest(
             request: $request,
-            keyId: $localActor->getKeyId() ?? throw new InvalidValueException("The key ID must be initialized"),
-            privateKeyPem: $localActor->getPrivateKey() ?? throw new InvalidValueException("The private key must be initialized"),
+            actor: $localActor,
         );
         $response = $this->httpClient->sendRequest($request);
 

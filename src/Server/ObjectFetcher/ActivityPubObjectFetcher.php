@@ -8,6 +8,8 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Rikudou\ActivityPub\Dto\WebFingerResponse;
 use Rikudou\ActivityPub\Exception\InvalidValueException;
 use Rikudou\ActivityPub\Exception\ResourceException;
+use Rikudou\ActivityPub\Server\Abstraction\LocalActor;
+use Rikudou\ActivityPub\Server\Signing\RequestSigner;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubObject;
 use Rikudou\ActivityPub\Vocabulary\Core\Link;
 use Rikudou\ActivityPub\Vocabulary\Parser\TypeParser;
@@ -18,10 +20,11 @@ final readonly class ActivityPubObjectFetcher implements ObjectFetcher
         private RequestFactoryInterface $requestFactory,
         private ClientInterface $httpClient,
         private TypeParser $typeParser,
+        private RequestSigner $requestSigner,
     ) {
     }
 
-    public function fetch(string|Link|WebFingerResponse $url, bool $allowCustomProperties = false): ActivityPubObject
+    public function fetch(string|Link|WebFingerResponse $url, bool $allowCustomProperties = false, ?LocalActor $actor = null): ActivityPubObject
     {
         if ($url instanceof Link) {
             $url = (string) $url;
@@ -43,6 +46,10 @@ final readonly class ActivityPubObjectFetcher implements ObjectFetcher
         $request = $this->requestFactory->createRequest('GET', $url)
             ->withHeader('Accept', 'application/activity+json')
         ;
+
+        if ($actor) {
+            $request = $this->requestSigner->signRequest($request, $actor);
+        }
 
         try {
             $response = $this->httpClient->sendRequest($request);

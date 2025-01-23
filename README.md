@@ -578,6 +578,7 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Rikudou\ActivityPub\Server\Signing\RequestSigner;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActivity;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubActor;
+use Rikudou\ActivityPub\Dto\ActorKey;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -617,8 +618,7 @@ class ActivitySender
             // now let's sign it!
             $request = $this->requestSigner->signRequest(
                 $request,
-                $actor->publicKey->id,
-                $actorPrivateKey,
+                new ActorKey(privateKey: $actorPrivateKey, keyId: $actor->publicKey->id),
             );
 
             $response = $this->httpClient->sendRequest($request);
@@ -734,6 +734,7 @@ services:
       $typeParser: '@Rikudou\ActivityPub\Vocabulary\Parser\TypeParser'
       $requestFactory: '@Psr\Http\Message\RequestFactoryInterface'
       $httpClient: '@Psr\Http\Client\ClientInterface'
+      $requestSigner: '@Rikudou\ActivityPub\Server\Signing\RequestSigner'
 
   Rikudou\ActivityPub\Vocabulary\Parser\TypeParser:
     class: Rikudou\ActivityPub\Vocabulary\Parser\DefaultTypeParser
