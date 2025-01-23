@@ -114,11 +114,6 @@ final readonly class RequestSignerAndValidator implements RequestSigner, Request
             $inboxPath .= '?' . $query;
         }
 
-        $body = (string) $request->getBody();
-        if (!$body) {
-            throw new InvalidStateException('The request must already have the final body assigned');
-        }
-
         $headers = [
             '(request-target)' => "post {$inboxPath}",
             'content-type' => 'application/activity+json',
@@ -126,7 +121,11 @@ final readonly class RequestSignerAndValidator implements RequestSigner, Request
             'host' => $request->getUri()->getHost(),
         ];
 
-        if ($request->getMethod() === 'POST') {
+        if ($request->getMethod() !== 'GET') {
+            $body = (string) $request->getBody();
+            if (!$body) {
+                throw new InvalidStateException('The request must already have the final body assigned');
+            }
             $headers['digest'] = 'SHA-256=' . base64_encode(hash('sha256', $body, true));
         }
 
