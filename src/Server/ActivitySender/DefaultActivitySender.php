@@ -75,7 +75,7 @@ final readonly class DefaultActivitySender implements ActivitySender
         }
 
         $handled = [];
-        $recipients = $this->getRecipientInboxes($recipients);
+        $recipients = $this->getRecipientInboxes($recipients, $localActor);
         foreach ($recipients as $recipient) {
             if (isset($handled[$recipient])) {
                 continue;
@@ -114,7 +114,7 @@ final readonly class DefaultActivitySender implements ActivitySender
      * @param array<string|Link|ActivityPubActor> $recipients
      * @return array<string|Link>
      */
-    private function getRecipientInboxes(array $recipients): iterable
+    private function getRecipientInboxes(array $recipients, LocalActor $actor): iterable
     {
         foreach ($recipients as $recipient) {
             if ($recipient instanceof ActivityPubActor) {
@@ -126,7 +126,7 @@ final readonly class DefaultActivitySender implements ActivitySender
                 }
             } else if ((string) $recipient !== ActivityPubConstants::PUBLIC_AUDIENCE) {
                 try {
-                    $object = $this->objectFetcher->fetch($recipient, true);
+                    $object = $this->objectFetcher->fetch($recipient, true, $actor);
                     if ($object instanceof ActivityPubActor) {
                         if ($object->endpoints instanceof Endpoints && $object->endpoints->sharedInbox) {
                             yield $object->endpoints->sharedInbox;

@@ -3,6 +3,7 @@
 namespace Rikudou\ActivityPub\Server\CollectionResolver;
 
 use Rikudou\ActivityPub\Exception\InvalidValueException;
+use Rikudou\ActivityPub\Server\Abstraction\LocalActor;
 use Rikudou\ActivityPub\Server\ObjectFetcher\ObjectFetcher;
 use Rikudou\ActivityPub\Vocabulary\Contract\ActivityPubCollection;
 use Rikudou\ActivityPub\Vocabulary\Core\CollectionPage;
@@ -15,7 +16,7 @@ final readonly class DefaultCollectionResolver implements CollectionResolver
     ) {
     }
 
-    public function resolve(ActivityPubCollection $collection): iterable
+    public function resolve(ActivityPubCollection $collection, ?LocalActor $actor = null): iterable
     {
         if ($collection->items) {
             return $collection->items;
@@ -27,7 +28,7 @@ final readonly class DefaultCollectionResolver implements CollectionResolver
 
         $pageLink = $collection->first;
         do {
-            $page = $this->fetchPage($pageLink);
+            $page = $this->fetchPage($pageLink, $actor);
             assert($page instanceof CollectionPage);
 
             if ($page->items) {
@@ -38,13 +39,13 @@ final readonly class DefaultCollectionResolver implements CollectionResolver
         } while ($pageLink);
     }
 
-    private function fetchPage(CollectionPage|Link $collectionPage): CollectionPage
+    private function fetchPage(CollectionPage|Link $collectionPage, ?LocalActor $actor): CollectionPage
     {
         if ($collectionPage instanceof CollectionPage) {
             return $collectionPage;
         }
 
-        $collectionPage = $this->objectFetcher->fetch($collectionPage);
+        $collectionPage = $this->objectFetcher->fetch($collectionPage, actor: $actor);
         if (!$collectionPage instanceof CollectionPage) {
             throw new InvalidValueException("The resource must be a collection page");
         }
