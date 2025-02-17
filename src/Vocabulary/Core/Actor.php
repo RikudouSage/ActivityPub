@@ -2,8 +2,10 @@
 
 namespace Rikudou\ActivityPub\Vocabulary\Core;
 
+use Rikudou\ActivityPub\ActivityPubConstants;
 use Rikudou\ActivityPub\Attribute\ObjectArray;
 use Rikudou\ActivityPub\Attribute\RequiredProperty;
+use Rikudou\ActivityPub\Attribute\SerializedName;
 use Rikudou\ActivityPub\Dto\Endpoints;
 use Rikudou\ActivityPub\Dto\PublicKey;
 use Rikudou\ActivityPub\Enum\ValidatorMode;
@@ -23,6 +25,27 @@ class Actor extends BaseObject implements ActivityPubActor
 {
     public string $type {
         get => 'Actor';
+    }
+
+    /**
+     * Identifies the context within which the object exists or an activity was performed.
+     *
+     * The context should always contain {@see ActivityPubConstants::DEFAULT_NAMESPACE} and may include additional
+     * contexts.
+     *
+     * @var array<string|array<string, string>>|string
+     */
+    #[SerializedName('@context')]
+    #[RequiredProperty(ValidatorMode::Lax)]
+    public string|array $context = [ActivityPubConstants::DEFAULT_NAMESPACE, ActivityPubConstants::SECURITY_NAMESPACE] {
+        get => $this->context;
+        set {
+            if ($this->__directSet) {
+                $this->context = $value;
+            } else {
+                $this->set('context', $value);
+            }
+        }
     }
 
     /**
