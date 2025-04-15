@@ -30,8 +30,8 @@ final readonly class OpenSslActorKeyGenerator implements ActorKeyGenerator
             assert(is_string($publicKeyPem));
 
             $reflection = new ReflectionObject($keyPair);
-            $reflection->getProperty('privateKey')->setValue($privateKeyPem);
-            $reflection->getProperty('publicKey')->setValue($publicKeyPem);
+            $reflection->getProperty('privateKey')->setValue($keyPair, $privateKeyPem);
+            $reflection->getProperty('publicKey')->setValue($keyPair, $publicKeyPem);
 
             return $keyPair;
         });
