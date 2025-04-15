@@ -32,8 +32,6 @@ final readonly class OpenSslActorKeyGenerator implements ActorKeyGenerator
             $reflection = new ReflectionObject($keyPair);
             $reflection->getProperty('privateKey')->setValue($keyPair, $privateKeyPem);
             $reflection->getProperty('publicKey')->setValue($keyPair, $publicKeyPem);
-
-            return $keyPair;
         });
         assert($keyPair instanceof KeyPair);
 
