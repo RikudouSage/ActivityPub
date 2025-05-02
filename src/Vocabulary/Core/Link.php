@@ -76,8 +76,9 @@ class Link implements JsonSerializable
 
     /**
      * A link relation associated with a Link. The value must conform to both the HTML5 and RFC5988 "link relation" definitions.
+     * @var string|array<string>|null
      */
-    public ?string $rel = null {
+    public string|array|null $rel = null {
         get => $this->rel;
         set {
             if ($this->__directSet) {
